@@ -1,36 +1,510 @@
 @import "tailwindcss";
 
+/* ============================================================
+   GATE AI COMMAND CENTER — PREMIUM DESIGN SYSTEM v2
+   Ultra-dark base, glassmorphism, neon gradient accents
+   ============================================================ */
+
 html,
 body {
   height: 100%;
 }
 
-/* Premium dark theme (independent of OS dark-mode). */
+/* === BASE THEME ========================================== */
 body {
-  background: #0b0f1a;
+  background: #000; /* Pure black base is more premium */
   color: #e8ecf5;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* KaTeX tweaks for readability */
+/* === MULTI-LAYER BACKGROUND ============================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 40% at 20% 10%, rgba(109, 40, 217, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(6, 182, 212, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 70%),
+    #050810;
+  pointer-events: none;
+  background-attachment: fixed; /* Parallax effect base */
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  /* SVG Noise Overlay (Ultra subtle) + Stardust */
+  background-image:
+    url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'),
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.04) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.03) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 80%, rgba(255,255,255,0.02) 0%, transparent 100%);
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-attachment: fixed; /* Parallax stardust/noise */
+}
+
+/* Base Click Compression */
+.active-compress:active {
+  transform: scale(0.97) !important;
+  transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Easing Vars for Smoothness */
+:root {
+  --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* === KATEX =============================================== */
 .katex {
   font-size: 1em;
 }
 
+/* === ANIMATED HERO GRADIENT ============================= */
 .gate-bg-animate {
-  background-size: 200% 200%;
-  animation: gateGradient 14s ease infinite;
+  background-size: 300% 300%;
+  animation: gateGradient 10s ease infinite;
 }
 
 @keyframes gateGradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
+/* === GRADIENT TEXT UTILITY ============================== */
+.text-gradient-neon {
+  background: linear-gradient(135deg, #d946ef 0%, #818cf8 40%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gateGradient 8s ease infinite;
+}
+
+/* === GLASS UTILITY ====================================== */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.5rem;
+}
+
+/* === NEON GLOW BORDERS ================================== */
+.glow-purple {
+  box-shadow:
+    0 0 0 1px rgba(109, 40, 217, 0.3),
+    0 0 30px rgba(109, 40, 217, 0.15),
+    0 4px 40px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.glow-cyan {
+  box-shadow:
+    0 0 0 1px rgba(6, 182, 212, 0.3),
+    0 0 30px rgba(6, 182, 212, 0.15),
+    0 4px 40px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.glow-hover:hover {
+  box-shadow:
+    0 0 0 1px rgba(109, 40, 217, 0.4),
+    0 0 40px rgba(109, 40, 217, 0.22),
+    0 8px 60px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  transform: translateY(-3px) scale(1.005);
+}
+
+/* === CARD DEPTH ========================================= */
+.card-depth {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.05) 0%,
+    rgba(255,255,255,0.02) 50%,
+    rgba(0,0,0,0.05) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top-color: rgba(255,255,255,0.15);
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.4),
+    0 1px 0 rgba(255,255,255,0.05) inset,
+    0 -1px 0 rgba(0,0,0,0.3) inset;
+}
+
+/* === BENTO CARD HOVER =================================== */
+.bento-card {
+  position: relative;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.28s ease,
+              border-color 0.28s ease;
+  will-change: transform, box-shadow;
+}
+
+.bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(109,40,217,0.12) 0%, rgba(6,182,212,0.08) 100%);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bento-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow:
+    0 0 0 1px rgba(109, 40, 217, 0.35),
+    0 8px 60px rgba(109, 40, 217, 0.20),
+    0 20px 80px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  border-color: rgba(109, 40, 217, 0.4) !important;
+}
+
+.bento-card:hover::before {
+  opacity: 1;
+}
+
+.bento-card:active {
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* === PREMIUM BUTTONS ==================================== */
+.btn-primary {
+  position: relative;
+  background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 0 20px rgba(109, 40, 217, 0.35),
+    0 2px 8px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  letter-spacing: 0.01em;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 32px rgba(109, 40, 217, 0.55),
+    0 4px 12px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow:
+    0 0 16px rgba(109, 40, 217, 0.35),
+    0 1px 4px rgba(0,0,0,0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #e4e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.22);
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* === NEON BLUE BUTTON =================================== */
+.btn-cyan {
+  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+  color: white;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 0 24px rgba(14, 165, 233, 0.35),
+    0 2px 8px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.btn-cyan:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 40px rgba(14, 165, 233, 0.55),
+    0 4px 12px rgba(0,0,0,0.5);
+  background: linear-gradient(135deg, #38BDF8 0%, #0EA5E9 100%);
+}
+
+/* === INPUT FOCUS GLOW =================================== */
+.input-neon {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 0.75rem;
+  color: #e8ecf5;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input-neon:focus {
+  border-color: rgba(109, 40, 217, 0.6);
+  box-shadow:
+    0 0 0 3px rgba(109, 40, 217, 0.12),
+    0 0 20px rgba(109, 40, 217, 0.10);
+}
+
+/* === SELECT STYLING ===================================== */
+select.input-neon option {
+  background: #1a1f30;
+  color: #e8ecf5;
+}
+
+/* === HEADER PREMIUM ===================================== */
+.header-glass {
+  background: rgba(11, 15, 26, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* === TIMER DISPLAY ====================================== */
+.timer-display {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.65rem;
+  font-family: 'Geist Mono', monospace;
+  color: #e8ecf5;
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 1px 0 rgba(0,0,0,0.3), 0 0 10px rgba(109,40,217,0.05);
+}
+
+/* === BACK LINK ========================================== */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  transition: color 0.2s ease, gap 0.2s ease;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #e2e8f0;
+  gap: 0.55rem;
+}
+
+/* === DIVIDER LINES ====================================== */
+.divider-neon {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(109,40,217,0.3), rgba(6,182,212,0.3), transparent);
+}
+
+/* === LIST ITEMS ========================================= */
+.list-item-hover {
+  transition: background 0.15s ease, padding-left 0.15s ease;
+  border-radius: 0.5rem;
+}
+
+.list-item-hover:hover {
+  background: rgba(255,255,255,0.05);
+  padding-left: 1rem;
+}
+
+.list-item-hover a {
+  display: block;
+  width: 100%;
+}
+
+/* === MCQ OPTION — OVERRIDES ============================= */
+.mcq-option-default {
+  border-color: rgba(255,255,255,0.15) !important;
+  background: rgba(255,255,255,0.02) !important;
+  color: #e2e8f0 !important;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.mcq-option-default:not(:disabled):hover {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(109,40,217,0.4) !important;
+  box-shadow: 0 0 12px rgba(109,40,217,0.10) !important;
+}
+
+/* === HOME PAGE CHIP LINKS ================================ */
+.chip-purple {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(109,40,217,0.15);
+  border: 1px solid rgba(109,40,217,0.35);
+  color: #c4b5fd;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 16px rgba(109,40,217,0.12);
+}
+
+.chip-purple:hover {
+  background: rgba(109,40,217,0.28);
+  box-shadow: 0 0 28px rgba(109,40,217,0.30);
+  border-color: rgba(109,40,217,0.55);
+}
+
+.chip-cyan {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.25);
+  color: rgba(103, 232, 249, 0.8);
+}
+
+/* === SCROLL FADE-IN ANIMATION =========================== */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fade-up-delay-1 { animation-delay: 0.05s; }
+.fade-up-delay-2 { animation-delay: 0.10s; }
+.fade-up-delay-3 { animation-delay: 0.15s; }
+.fade-up-delay-4 { animation-delay: 0.20s; }
+.fade-up-delay-5 { animation-delay: 0.25s; }
+
+/* === RADIANT GLOW SPOT (hero) =========================== */
+.hero-glow {
+  position: absolute;
+  top: -60%;
+  left: 40%;
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(109,40,217,0.18) 0%, rgba(6,182,212,0.06) 50%, transparent 75%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+  from { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  to   { transform: translate(30px, 20px) scale(1.1); opacity: 1; }
+}
+
+/* === SECTION LABEL ====================================== */
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.7);
+}
+
+/* === SNAPSHOT STAT ROW ================================== */
+.stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.stat-row:last-of-type { border-bottom: none; }
+
+/* === SCROLLBAR ========================================== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb {
+  background: rgba(109,40,217,0.3);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(109,40,217,0.55); }
+
+/* === LOADING PULSE ====================================== */
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(109,40,217,0.3); }
+  50%       { box-shadow: 0 0 40px rgba(109,40,217,0.6); }
+}
+
+.loading-pulse {
+  animation: neonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-20px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

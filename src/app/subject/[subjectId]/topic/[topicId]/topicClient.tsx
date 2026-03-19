@@ -7,6 +7,7 @@ import { getStoredAiConfig } from "@/components/ApiKeySettings";
 import { MathText } from "@/components/MathText";
 import { toFriendlyAiError } from "@/lib/aiErrors";
 
+// ── LOCKED: types + cache key ─────────────────────────────
 type Props = {
   subjectName: string;
   topicTitle: string;
@@ -19,10 +20,11 @@ type NotesState =
   | { status: "loading"; text: string }
   | { status: "error"; text: string; error: string };
 
-// Versioned key so we can change formatting rules without stale cache.
-const notesKey = (subjectId: string, topicId: string) => `gate_ai_v2_notes_${subjectId}__${topicId}`;
+const notesKey = (subjectId: string, topicId: string) =>
+  `gate_ai_v2_notes_${subjectId}__${topicId}`;
 
 export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Props) {
+  // ── LOCKED: all state ────────────────────────────────────
   const [notes, setNotes] = useState<NotesState>({ status: "idle", text: "" });
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
     return Boolean(cfg.apiKey?.trim());
   }, []);
 
+  // ── LOCKED: generate handler + API call ──────────────────
   const generate = async () => {
     const cfg = getStoredAiConfig();
     if (!cfg.apiKey?.trim()) {
@@ -65,69 +68,214 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
       setNotes({ status: "error", text: "", error: toFriendlyAiError(msg) });
     }
   };
+  // ─────────────────────────────────────────────────────────
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className="grid gap-6 lg:grid-cols-2"
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="grid gap-5 lg:grid-cols-2"
     >
+      {/* ── REVISION NOTES PANEL ─────────────────────── */}
       <motion.section
-        whileHover={{ boxShadow: "0 0 40px rgba(109,40,217,0.18)" }}
-        className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur"
+        whileHover={{
+          boxShadow:
+            "0 0 0 1px rgba(109,40,217,0.35), 0 0 48px rgba(109,40,217,0.18), 0 8px 60px rgba(0,0,0,0.5)",
+          y: -3,
+        }}
+        transition={{ duration: 0.2 }}
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          border: "1px solid rgba(255,255,255,0.09)",
+          borderTopColor: "rgba(255,255,255,0.16)",
+          borderRadius: "1.25rem",
+          padding: "1.25rem",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset",
+        }}
       >
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-zinc-100">Revision Notes</h2>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "0.75rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <h2
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: 700,
+                color: "#f1f5f9",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Revision Notes
+            </h2>
+            {notes.text && notes.status === "idle" && (
+              <div
+                style={{
+                  marginTop: "0.2rem",
+                  fontSize: "0.65rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "rgba(16,185,129,0.8)",
+                }}
+              >
+                ✓ Cached
+              </div>
+            )}
+          </div>
+
+          {/* ── LOCKED: onClick + disabled ─ */}
           <button
             onClick={generate}
-            className="rounded-xl bg-[#6D28D9] px-3 py-1.5 text-sm text-white shadow-[0_0_30px_rgba(109,40,217,0.35)] hover:bg-[#5B21B6] disabled:opacity-50"
+            className={notes.status === "loading" ? "btn-secondary loading-pulse" : "btn-primary"}
+            style={{ padding: "0.45rem 1rem", fontSize: "0.8rem" }}
             disabled={notes.status === "loading"}
           >
             {notes.status === "loading" ? "Generating..." : "Generate Notes"}
           </button>
         </div>
 
-        {notes.status === "error" ? (
-          <div className="mt-3 rounded-xl border border-red-300/30 bg-red-500/10 p-3 text-sm text-red-200">
+        {/* Error state */}
+        {notes.status === "error" && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              marginTop: "0.75rem",
+              borderRadius: "0.75rem",
+              border: "1px solid rgba(239,68,68,0.3)",
+              background: "rgba(239,68,68,0.08)",
+              padding: "0.75rem",
+              fontSize: "0.8rem",
+              color: "#fca5a5",
+            }}
+          >
             {notes.error}
-          </div>
-        ) : null}
+          </motion.div>
+        )}
 
-        <div className="mt-4 rounded-xl border border-white/10 bg-black/10 p-3">
+        {/* Notes content area */}
+        <div
+          style={{
+            marginTop: "1rem",
+            borderRadius: "0.75rem",
+            border: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(0,0,0,0.2)",
+            padding: "0.85rem",
+            minHeight: "8rem",
+          }}
+        >
           {notes.text ? (
             <MathText text={notes.text} />
           ) : (
-            <div className="text-sm text-zinc-300">
-              Click <span className="font-medium">Generate Notes</span>. Notes are cached per topic in your browser.
+            <div
+              style={{
+                fontSize: "0.83rem",
+                color: "rgba(148,163,184,0.6)",
+                lineHeight: 1.6,
+              }}
+            >
+              Click{" "}
+              <span style={{ color: "#c4b5fd", fontWeight: 600 }}>Generate Notes</span>
+              . Notes are cached per topic in your browser.
             </div>
           )}
         </div>
       </motion.section>
 
+      {/* ── PRACTICE PANEL ───────────────────────────── */}
       <motion.section
-        whileHover={{ boxShadow: "0 0 40px rgba(59,130,246,0.14)" }}
-        className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur"
+        whileHover={{
+          boxShadow:
+            "0 0 0 1px rgba(6,182,212,0.3), 0 0 48px rgba(6,182,212,0.12), 0 8px 60px rgba(0,0,0,0.5)",
+          y: -3,
+        }}
+        transition={{ duration: 0.2 }}
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(6,182,212,0.06) 0%, rgba(255,255,255,0.02) 100%)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          border: "1px solid rgba(6,182,212,0.15)",
+          borderTopColor: "rgba(6,182,212,0.25)",
+          borderRadius: "1.25rem",
+          padding: "1.25rem",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset",
+        }}
       >
-        <h2 className="text-lg font-semibold text-zinc-100">Practice</h2>
-        <p className="mt-1 text-sm text-zinc-300">
+        <h2
+          style={{
+            fontSize: "1.05rem",
+            fontWeight: 700,
+            color: "#f1f5f9",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Practice
+        </h2>
+        <p
+          style={{
+            marginTop: "0.35rem",
+            fontSize: "0.82rem",
+            color: "rgba(148,163,184,0.75)",
+            lineHeight: 1.55,
+          }}
+        >
           After quick revision, start a strict topic-only practice set.
         </p>
-        <div className="mt-4">
+
+        <div style={{ marginTop: "1.25rem" }}>
+          {/* ── LOCKED: href ─ */}
           <Link
             href={`/subject/${subjectId}/topic/${topicId}/practice`}
-            className="inline-flex rounded-xl bg-[#0EA5E9] px-4 py-2 text-sm text-white shadow-[0_0_34px_rgba(14,165,233,0.25)] hover:bg-[#0284C7]"
+            className="btn-cyan"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem",
+              padding: "0.55rem 1.25rem",
+              fontSize: "0.875rem",
+              textDecoration: "none",
+            }}
           >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Start Practice
           </Link>
         </div>
+
         {!canStart ? (
-          <div className="mt-3 text-sm text-zinc-300">
-            Add your AI key in <Link className="underline underline-offset-4" href="/settings">Settings</Link> first.
+          <div
+            style={{
+              marginTop: "0.85rem",
+              fontSize: "0.78rem",
+              color: "rgba(148,163,184,0.65)",
+            }}
+          >
+            Add your AI key in{" "}
+            {/* ── LOCKED: href ─ */}
+            <Link
+              href="/settings"
+              style={{
+                color: "rgba(196,181,253,0.9)",
+                textDecoration: "underline",
+                textUnderlineOffset: 3,
+              }}
+            >
+              Settings
+            </Link>{" "}
+            first.
           </div>
         ) : null}
       </motion.section>
     </motion.div>
   );
 }
-

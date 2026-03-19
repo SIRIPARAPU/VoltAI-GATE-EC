@@ -1,61 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useTimer } from "@/components/TimerProvider";
-
-function fmt(ms: number) {
-  const s = Math.max(0, Math.floor(ms / 1000));
-  const hh = Math.floor(s / 3600);
-  const mm = Math.floor((s % 3600) / 60);
-  const ss = s % 60;
-  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
-}
+import { usePathname } from "next/navigation";
 
 export function Header() {
-  const { endAtMs, setMinutesFromNow, clear } = useTimer();
-  const [now, setNow] = useState(() => Date.now());
-  const [minutes, setMinutes] = useState("30");
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 250);
-    return () => clearInterval(t);
-  }, []);
-
-  const remaining = useMemo(() => (endAtMs ? endAtMs - now : null), [endAtMs, now]);
+  // Hide header on /world for full immersion, and on / (homepage has its own hero)
+  if (pathname === "/world" || pathname === "/") return null;
 
   return (
-    <header className="sticky top-0 z-10 border-b border-white/10 bg-[#0b0f1a]/60 backdrop-blur">
+    <header className="header-glass sticky top-0 z-50">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="font-semibold tracking-tight text-zinc-100">
-          GATE AI Command Center v2
-        </Link>
-        <div className="flex items-center gap-3 text-sm text-zinc-200">
-          <div className="hidden sm:block text-zinc-300/80">Global timer</div>
-          <div className="rounded-md border border-white/10 bg-white/5 px-2 py-1 font-mono text-zinc-100">
-            {remaining == null ? "--:--:--" : fmt(remaining)}
-          </div>
-          <input
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-            className="w-16 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-zinc-100"
-            inputMode="numeric"
+        {/* Logo / Brand */}
+        <Link
+          href="/"
+          className="group flex items-center gap-2 font-semibold tracking-tight"
+          style={{ textDecoration: "none" }}
+        >
+          <span
+            className="inline-block h-2 w-2 rounded-full"
+            style={{
+              background: "linear-gradient(135deg, #d946ef, #22d3ee)",
+              boxShadow: "0 0 8px rgba(109,40,217,0.8)",
+            }}
           />
-          <button
-            onClick={() => setMinutesFromNow(Number(minutes))}
-            className="rounded-md bg-[#6D28D9] px-3 py-1.5 text-white shadow-[0_0_24px_rgba(109,40,217,0.35)] hover:bg-[#5B21B6]"
+          <span
+            className="text-gradient-neon text-sm font-bold tracking-tight"
+            style={{ fontSize: "0.95rem" }}
           >
-            Start
-          </button>
-          <button
-            onClick={clear}
-            className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 hover:bg-white/10"
-          >
-            Clear
-          </button>
-        </div>
+            VoltAI
+          </span>
+        </Link>
+
+        {/* Settings link */}
+        <Link
+          href="/settings"
+          className="flex items-center gap-1.5 text-xs font-medium"
+          style={{ color: "rgba(148,163,184,0.6)", textDecoration: "none" }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Settings
+        </Link>
       </div>
     </header>
   );
 }
-

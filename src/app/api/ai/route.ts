@@ -5,12 +5,13 @@ const BodySchema = z.object({
   provider: z.enum(["openai", "groq", "gemini"]).default("openai"),
   apiKey: z.string().min(1),
   model: z.string().min(1).default("gpt-4o-mini"),
-  mode: z.enum(["notes", "questions", "solution"]),
-  subject: z.string().min(1),
-  topic: z.string().min(1),
+  mode: z.enum(["notes", "questions", "solution", "chat"]),
+  subject: z.string().optional(),
+  topic: z.string().optional(),
   previousQuestions: z.array(z.string()).optional(),
   question: z.string().optional(),
   userAnswer: z.string().optional(),
+  chatHistory: z.array(z.object({ role: z.enum(["user", "assistant"]), content: z.string() })).optional(),
 });
 
 const NumericAnswer = z.union([
@@ -79,8 +80,7 @@ async function callOpenAICompatible(opts: {
   baseUrl: string;
   apiKey: string;
   model: string;
-  system: string;
-  user: string;
+  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>;
   json?: boolean;
 }) {
   const res = await fetch(`${opts.baseUrl}/v1/chat/completions`, {
@@ -93,16 +93,12 @@ async function callOpenAICompatible(opts: {
       model: opts.model,
       temperature: opts.json ? 0.1 : 0.2,
       response_format: opts.json ? { type: "json_object" } : undefined,
-      messages: [
-        { role: "system", content: opts.system },
-        { role: "user", content: opts.user },
-      ],
+      messages: opts.messages,
     }),
   });
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    // Try to extract a useful error code/message for the UI.
     try {
       const parsed = JSON.parse(text) as unknown;
       const errObj =
@@ -132,11 +128,27 @@ async function callOpenAICompatible(opts: {
   return content.trim();
 }
 
-async function callGemini(opts: { apiKey: string; model: string; system: string; user: string }) {
+async function callGemini(opts: { apiKey: string; model: string; messages: Array<{ role: "system" | "user" | "assistant"; content: string }> }) {
   const model = opts.model.includes("/") ? opts.model.split("/").pop() : opts.model;
   const url = `https://generativelanguage.googleapis.com/v1/models/${encodeURIComponent(
     model || "gemini-1.5-flash",
   )}:generateContent?key=${encodeURIComponent(opts.apiKey)}`;
+
+  // Convert generic messages to Gemini format
+  const systemMsg = opts.messages.find(m => m.role === "system")?.content || "";
+  
+  const contents = opts.messages.filter(m => m.role !== "system").map(m => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }]
+  }));
+  
+  // If first message isn't user (e.g., if we only had system), Gemini requires user first.
+  if (contents.length === 0 || contents[0].role !== "user") {
+    contents.unshift({ role: "user", parts: [{ text: systemMsg || "Hello" }] });
+  } else if (systemMsg) {
+    // Inject system msg into first user message
+    contents[0].parts[0].text = `[System Instructions:\n${systemMsg}]\n\n` + contents[0].parts[0].text;
+  }
 
   const res = await fetch(url, {
     method: "POST",
@@ -145,12 +157,7 @@ async function callGemini(opts: { apiKey: string; model: string; system: string;
     },
     body: JSON.stringify({
       generationConfig: { temperature: 0.2, maxOutputTokens: 1800 },
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: `${opts.system}\n\n${opts.user}` }],
-        },
-      ],
+      contents,
     }),
   });
 
@@ -230,14 +237,38 @@ export async function POST(req: Request) {
 
     const apiKey = resolveApiKey();
 
-    const system =
+    const systemBase =
       "You are a precise GATE EC tutor. Be strict about topic boundaries. Do not mix topics. Do not repeat. Be concise and correct. Prefer correctness over creativity.";
-    const run = async (args: { apiKey: string; model: string; system: string; user: string }) => {
+    
+    const run = async (args: { apiKey: string; model: string; messages: Array<{role: "system"|"user"|"assistant", content: string}> }) => {
       if (body.provider === "gemini") return await callGemini(args);
       const baseUrl = body.provider === "groq" ? "https://api.groq.com/openai" : "https://api.openai.com";
       const json = body.mode === "questions";
       return await callOpenAICompatible({ baseUrl, json, ...args });
     };
+
+    if (body.mode === "chat") {
+      const history = body.chatHistory ?? [];
+      const messages: Array<{role: "system"|"user"|"assistant", content: string}> = [
+        { role: "system", content: "You are a world-class GATE EC Personal Mentor. You NEVER give vague or generic advice. You understand the GATE syllabus deeply. You use step-by-step logic, embed LaTeX formulas using $...$ or $$...$$, and strictly stay within the subject/topic context provided. If asked a generic question outside GATE EC, politely refuse." }
+      ];
+      
+      const contextPrefix = `[User Context]\nSubject: ${body.subject || "General"}\nTopic: ${body.topic || "General"}\nUser question follows:\n\n`;
+      
+      // Transform history
+      for (let i = 0; i < history.length; i++) {
+        const isLastMsg = i === history.length - 1;
+        const msg = history[i];
+        if (msg.role === "user" && isLastMsg) {
+          messages.push({ role: "user", content: contextPrefix + msg.content });
+        } else {
+          messages.push({ role: msg.role, content: msg.content });
+        }
+      }
+
+      const text = await run({ apiKey, model: body.model, messages });
+      return NextResponse.json({ text });
+    }
 
     if (body.mode === "notes") {
       const user = [
@@ -262,7 +293,7 @@ export async function POST(req: Request) {
         "- Do NOT use markdown headings or bold. Only plain text and LaTeX.",
       ].join("\n");
 
-      const text = await run({ apiKey, model: body.model, system, user });
+      const text = await run({ apiKey, model: body.model, messages: [{ role: "system", content: systemBase }, { role: "user", content: user }] });
       return NextResponse.json({ text });
     }
 
@@ -321,8 +352,10 @@ export async function POST(req: Request) {
         return await run({
           apiKey,
           model: body.model,
-          system,
-          user,
+          messages: [
+            { role: "system", content: systemBase },
+            { role: "user", content: user }
+          ],
         });
       };
 
@@ -372,7 +405,14 @@ export async function POST(req: Request) {
       "",
       body.userAnswer ? `User answer: ${body.userAnswer}` : "",
     ].join("\n");
-    const text = await run({ apiKey, model: body.model, system, user });
+    const text = await run({ 
+      apiKey, 
+      model: body.model, 
+      messages: [
+        { role: "system", content: systemBase },
+        { role: "user", content: user }
+      ]
+    });
     return NextResponse.json({ text });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Unknown error";

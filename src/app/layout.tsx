@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "katex/dist/katex.min.css";
 import { TimerProvider } from "@/components/TimerProvider";
+import { ProgressProvider } from "@/components/ProgressProvider";
 import { Header } from "@/components/Header";
+import { AiMentor } from "@/components/AiMentor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GATE AI Command Center v2",
-  description: "Personal, topic-focused study platform for GATE EC 2027.",
+  title: "VoltAI — GATE EC Command Center",
+  description: "Your AI-powered gateway to mastering GATE EC 2027.",
 };
 
 export default function RootLayout({
@@ -30,10 +32,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TimerProvider>
-          <Header />
-          {children}
-        </TimerProvider>
+        <ProgressProvider>
+          <TimerProvider>
+            <Header />
+            <AiMentor />
+            {children}
+          </TimerProvider>
+        </ProgressProvider>
       </body>
     </html>
   );
