@@ -22,7 +22,7 @@ export default async function SubjectPage(props: Props) {
   // ─────────────────────────────────────────────────────────
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-4 py-8" style={{ position: "relative" }}>
+    <main className="mx-auto min-h-screen max-w-6xl px-4 py-10" style={{ position: "relative" }}>
 
       {/* ── PCB Circuit Background (same as homepage) ──── */}
       <div
@@ -67,40 +67,42 @@ export default async function SubjectPage(props: Props) {
           </h1>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-3">
-          {/* Left: Theory + Practice */}
-          <div className="lg:col-span-2 grid gap-5">
-
-            <TheorySection 
-              subjectId={subject.id} 
-              playlistUrl={subject.playlistUrl} 
-              playlistId={playlistId || ""} 
-              videoIds={videoIds} 
+        <div className="grid gap-6">
+            <TheorySection
+              subjectId={subject.id}
+              playlistUrl={subject.playlistUrl}
+              playlistId={playlistId || ""}
+              videoIds={videoIds}
             />
 
             {/* ── Practice Section ────────────────────────── */}
             <section
               className="card-depth fade-up fade-up-delay-2"
-              style={{ borderRadius: "1.25rem", padding: "1.25rem" }}
+              style={{ borderRadius: "1.375rem", padding: "1.75rem" }}
             >
+              <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(34,211,238,0.7)", marginBottom: "0.3rem" }}>
+                Practice
+              </div>
               <h2
                 style={{
-                  fontSize: "1.05rem",
+                  fontSize: "1.1rem",
                   fontWeight: 700,
                   color: "#f1f5f9",
-                  letterSpacing: "-0.01em",
+                  letterSpacing: "-0.015em",
+                  margin: 0,
                 }}
               >
-                Practice
+                Topic Practice
               </h2>
               <p
                 style={{
                   marginTop: "0.3rem",
-                  fontSize: "0.8rem",
-                  color: "rgba(148,163,184,0.7)",
+                  fontSize: "0.78rem",
+                  color: "rgba(148,163,184,0.55)",
+                  lineHeight: 1.5,
                 }}
               >
-                Choose a topic (strictly from syllabus) → get revision notes → start practice.
+                Choose a topic → get revision notes → start practice.
               </p>
 
               <div
@@ -119,7 +121,7 @@ export default async function SubjectPage(props: Props) {
                       key={t.id}
                       className="list-item-hover"
                       style={{
-                        padding: "0.75rem 1rem",
+                        padding: "0.875rem 1.125rem",
                         borderBottom: "1px solid rgba(255,255,255,0.04)",
                       }}
                     >
@@ -151,86 +153,6 @@ export default async function SubjectPage(props: Props) {
                 </ul>
               </div>
             </section>
-          </div>
-
-          {/* ── Sidebar: Study Snapshot ──────────────────── */}
-          <aside className="lg:col-span-1 lg:sticky lg:top-24 fade-up fade-up-delay-3">
-            <div
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(109,40,217,0.10) 0%, rgba(6,182,212,0.06) 100%)",
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-                border: "1px solid rgba(109,40,217,0.25)",
-                borderRadius: "1.25rem",
-                padding: "1.25rem",
-                boxShadow:
-                  "0 0 40px rgba(109,40,217,0.10), 0 4px 24px rgba(0,0,0,0.4)",
-              }}
-            >
-              {/* Header */}
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "rgba(196,181,253,0.8)",
-                  marginBottom: "1rem",
-                }}
-              >
-                Study Snapshot
-              </div>
-
-              {/* Stats */}
-              <div className="stat-row">
-                <span style={{ fontSize: "0.85rem", color: "rgba(148,163,184,0.8)" }}>
-                  Theory lectures
-                </span>
-                <span
-                  style={{
-                    fontFamily: "monospace",
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    color: "#c4b5fd",
-                  }}
-                >
-                  {videoIds.length}
-                </span>
-              </div>
-              <div className="stat-row">
-                <span style={{ fontSize: "0.85rem", color: "rgba(148,163,184,0.8)" }}>
-                  Topics
-                </span>
-                <span
-                  style={{
-                    fontFamily: "monospace",
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    color: "#67e8f9",
-                  }}
-                >
-                  {topics.length}
-                </span>
-              </div>
-
-              {/* Note */}
-              <div
-                style={{
-                  marginTop: "1rem",
-                  padding: "0.75rem",
-                  borderRadius: "0.75rem",
-                  background: "rgba(0,0,0,0.25)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  fontSize: "0.72rem",
-                  lineHeight: 1.6,
-                  color: "rgba(148,163,184,0.65)",
-                }}
-              >
-                Practice never tracks completion. It stays topic-only for correctness.
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
     </main>

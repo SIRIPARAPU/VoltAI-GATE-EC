@@ -5,21 +5,29 @@
    Ultra-dark base, glassmorphism, neon gradient accents
    ============================================================ */
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   height: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
 }
 
 /* === BASE THEME ========================================== */
 body {
-  background: #000; /* Pure black base is more premium */
+  background: #050810;
   color: #e8ecf5;
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-family: var(--font-space-grotesk), 'Inter', Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
 /* === MULTI-LAYER BACKGROUND ============================== */
+/* Using a single fixed layer with no background-attachment: fixed (causes jank) */
 body::before {
   content: '';
   position: fixed;
@@ -31,7 +39,8 @@ body::before {
     radial-gradient(ellipse 50% 60% at 50% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 70%),
     #050810;
   pointer-events: none;
-  background-attachment: fixed; /* Parallax effect base */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 body::after {
@@ -39,7 +48,6 @@ body::after {
   position: fixed;
   inset: 0;
   z-index: -1;
-  /* SVG Noise Overlay (Ultra subtle) + Stardust */
   background-image:
     url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'),
     radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.04) 0%, transparent 100%),
@@ -48,7 +56,8 @@ body::after {
   opacity: 0.12;
   mix-blend-mode: overlay;
   pointer-events: none;
-  background-attachment: fixed; /* Parallax stardust/noise */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Base Click Compression */
@@ -93,18 +102,20 @@ body::after {
 /* === GLASS UTILITY ====================================== */
 .glass {
   background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.25rem;
+  transform: translateZ(0);
 }
 
 .glass-strong {
   background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 1.5rem;
+  transform: translateZ(0);
 }
 
 /* === NEON GLOW BORDERS ================================== */
@@ -141,14 +152,15 @@ body::after {
     rgba(255,255,255,0.02) 50%,
     rgba(0,0,0,0.05) 100%
   );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.08);
   border-top-color: rgba(255,255,255,0.15);
   box-shadow:
     0 4px 24px rgba(0,0,0,0.4),
     0 1px 0 rgba(255,255,255,0.05) inset,
     0 -1px 0 rgba(0,0,0,0.3) inset;
+  transform: translateZ(0);
 }
 
 /* === BENTO CARD HOVER =================================== */
@@ -315,11 +327,12 @@ select.input-neon option {
 
 /* === HEADER PREMIUM ===================================== */
 .header-glass {
-  background: rgba(11, 15, 26, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(11, 15, 26, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 4px 32px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04);
+  transform: translateZ(0);
 }
 
 /* === TIMER DISPLAY ====================================== */
@@ -480,6 +493,226 @@ select.input-neon option {
 
 .stat-row:last-of-type { border-bottom: none; }
 
+/* === GALAXY STAR FIELD ================================== */
+.star-field {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: var(--min-op, 0.2); transform: scale(1); }
+  50%       { opacity: var(--max-op, 1); transform: scale(1.4); }
+}
+
+@keyframes shootingStar {
+  0%   { transform: translateX(0) translateY(0) rotate(-30deg); opacity: 1; }
+  100% { transform: translateX(300px) translateY(150px) rotate(-30deg); opacity: 0; }
+}
+
+/* === FEATURE FLASH CARDS ================================ */
+.flash-cards-track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.5rem 0 1.5rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.flash-cards-track::-webkit-scrollbar { display: none; }
+
+.flash-card {
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.15);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  cursor: default;
+  transform: translateZ(0);
+}
+
+.flash-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+}
+
+.flash-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px var(--card-glow, rgba(124,58,237,0.2));
+  border-color: var(--card-border, rgba(124,58,237,0.3));
+}
+
+/* === STRATEGY SECTION CARDS ============================ */
+.strategy-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.strategy-card:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* === VIDEO PLAYER SECTION =============================== */
+.video-player-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  border-radius: 0.875rem;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+.video-player-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.playlist-panel {
+  height: 360px;
+  overflow-y: auto;
+  border-radius: 0.875rem;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.07);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(109,40,217,0.4) transparent;
+}
+
+.playlist-panel::-webkit-scrollbar { width: 4px; }
+.playlist-panel::-webkit-scrollbar-track { background: transparent; }
+.playlist-panel::-webkit-scrollbar-thumb { background: rgba(109,40,217,0.4); border-radius: 99px; }
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-left: 2px solid transparent;
+  min-height: 60px;
+}
+
+.playlist-item:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.playlist-item.active {
+  background: rgba(124,58,237,0.12);
+  border-left-color: #7c3aed;
+}
+
+/* === WORLD LAYOUT RESPONSIVE ============================= */
+@media (max-width: 900px) {
+  .world-middle {
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+  }
+  .world-middle > div:first-child,
+  .world-middle > div:last-child {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 0.75rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .world-layout {
+    padding: 0.75rem 1rem !important;
+    gap: 1rem !important;
+  }
+  .world-middle > div:first-child,
+  .world-middle > div:last-child {
+    gap: 0.5rem !important;
+  }
+}
+
+/* === DASHBOARD RESPONSIVE ================================ */
+@media (max-width: 900px) {
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .dashboard-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 480px) {
+  .dashboard-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* === FEATURE CARDS GRID ================================= */
+.feature-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.125rem;
+}
+
+/* === RESPONSIVE OVERRIDES =============================== */
+@media (max-width: 900px) {
+  .feature-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .feature-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Theory section: stack player above playlist on mobile */
+  .theory-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .playlist-panel {
+    height: 260px !important;
+  }
+  /* Flash cards: full-width on very small screens */
+  .flash-card {
+    flex: 0 0 240px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .flash-card {
+    flex: 0 0 calc(100vw - 3rem) !important;
+  }
+}
+
 /* === SCROLLBAR ========================================== */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
@@ -507,4 +740,47 @@ select.input-neon option {
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* === SCROLL PERFORMANCE ================================= */
+/* Reduce GPU-heavy effects on mobile for smoother scroll */
+@media (max-width: 768px) {
+  .glass,
+  .glass-strong,
+  .card-depth,
+  .flash-card,
+  .header-glass {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* Disable heavy hero animations on mobile */
+  .gate-bg-animate {
+    animation: none !important;
+  }
+
+  .text-gradient-neon {
+    animation: none !important;
+  }
+
+  /* Kill floating blob animations on mobile */
+  .hero-glow {
+    animation: none !important;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* GPU layer promotion for sticky/fixed elements */
+.sticky, [style*="position: fixed"], [style*="position: sticky"] {
+  transform: translateZ(0);
+  will-change: transform;
 }

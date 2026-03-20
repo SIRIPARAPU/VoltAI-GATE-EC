@@ -75,9 +75,9 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="grid gap-5 lg:grid-cols-2"
+      style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
     >
-      {/* ── REVISION NOTES PANEL ─────────────────────── */}
+      {/* ── REVISION NOTES PANEL (full width) ────────── */}
       <motion.section
         whileHover={{
           boxShadow:
@@ -93,7 +93,7 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
           border: "1px solid rgba(255,255,255,0.09)",
           borderTopColor: "rgba(255,255,255,0.16)",
           borderRadius: "1.25rem",
-          padding: "1.25rem",
+          padding: "1.5rem",
           boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset",
         }}
       >
@@ -132,17 +132,23 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
               </div>
             )}
           </div>
-
-          {/* ── LOCKED: onClick + disabled ─ */}
-          <button
-            onClick={generate}
-            className={notes.status === "loading" ? "btn-secondary loading-pulse" : "btn-primary"}
-            style={{ padding: "0.45rem 1rem", fontSize: "0.8rem" }}
-            disabled={notes.status === "loading"}
-          >
-            {notes.status === "loading" ? "Generating..." : "Generate Notes"}
-          </button>
         </div>
+
+        {/* ── LOCKED: onClick + disabled ─ */}
+        <button
+          onClick={generate}
+          className={notes.status === "loading" ? "btn-secondary loading-pulse" : "btn-primary"}
+          style={{
+            marginTop: "1rem",
+            width: "100%",
+            padding: "0.75rem 1.25rem",
+            fontSize: "0.875rem",
+            borderRadius: "0.75rem",
+          }}
+          disabled={notes.status === "loading"}
+        >
+          {notes.status === "loading" ? "Generating..." : "Generate Notes"}
+        </button>
 
         {/* Error state */}
         {notes.status === "error" && (
@@ -170,8 +176,8 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
             borderRadius: "0.75rem",
             border: "1px solid rgba(255,255,255,0.06)",
             background: "rgba(0,0,0,0.2)",
-            padding: "0.85rem",
-            minHeight: "8rem",
+            padding: "1.25rem",
+            minHeight: "12rem",
           }}
         >
           {notes.text ? (
@@ -192,72 +198,36 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
         </div>
       </motion.section>
 
-      {/* ── PRACTICE PANEL ───────────────────────────── */}
-      <motion.section
-        whileHover={{
-          boxShadow:
-            "0 0 0 1px rgba(6,182,212,0.3), 0 0 48px rgba(6,182,212,0.12), 0 8px 60px rgba(0,0,0,0.5)",
-          y: -3,
-        }}
-        transition={{ duration: 0.2 }}
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(6,182,212,0.06) 0%, rgba(255,255,255,0.02) 100%)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: "1px solid rgba(6,182,212,0.15)",
-          borderTopColor: "rgba(6,182,212,0.25)",
-          borderRadius: "1.25rem",
-          padding: "1.25rem",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset",
-        }}
-      >
-        <h2
+      {/* ── LET'S PRACTICE (below notes) ────────────── */}
+      <div style={{ marginTop: "0.25rem" }}>
+        {/* ── LOCKED: href ─ */}
+        <Link
+          href={`/subject/${subjectId}/topic/${topicId}/practice`}
+          className="btn-cyan"
           style={{
-            fontSize: "1.05rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            width: "100%",
+            padding: "0.875rem 1.5rem",
+            fontSize: "0.95rem",
             fontWeight: 700,
-            color: "#f1f5f9",
-            letterSpacing: "-0.01em",
+            textDecoration: "none",
+            borderRadius: "0.875rem",
           }}
         >
-          Practice
-        </h2>
-        <p
-          style={{
-            marginTop: "0.35rem",
-            fontSize: "0.82rem",
-            color: "rgba(148,163,184,0.75)",
-            lineHeight: 1.55,
-          }}
-        >
-          After quick revision, start a strict topic-only practice set.
-        </p>
-
-        <div style={{ marginTop: "1.25rem" }}>
-          {/* ── LOCKED: href ─ */}
-          <Link
-            href={`/subject/${subjectId}/topic/${topicId}/practice`}
-            className="btn-cyan"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.4rem",
-              padding: "0.55rem 1.25rem",
-              fontSize: "0.875rem",
-              textDecoration: "none",
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Start Practice
-          </Link>
-        </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Let&apos;s Practice
+        </Link>
 
         {!canStart ? (
           <div
             style={{
-              marginTop: "0.85rem",
+              marginTop: "0.75rem",
               fontSize: "0.78rem",
               color: "rgba(148,163,184,0.65)",
+              textAlign: "center",
             }}
           >
             Add your AI key in{" "}
@@ -275,7 +245,7 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
             first.
           </div>
         ) : null}
-      </motion.section>
+      </div>
     </motion.div>
   );
 }
