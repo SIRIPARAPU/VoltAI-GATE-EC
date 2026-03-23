@@ -810,12 +810,3 @@ select.input-neon option {
   will-change: transform;
 }
 
-/* === LIGHT THEME OVERRIDES ============================== */
-/* CSS custom properties for theme-aware colors */
-:root {
-  --text-primary: #f1f5f9;
-  --text-secondary: rgba(148,163,184,0.6);
-  --text-muted: rgba(148,163,184,0.4);
-  --bg-panel: rgba(0,0,0,0.2);
-  --border-subtle: rgba(255,255,255,0.08);
-}

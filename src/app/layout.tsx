@@ -6,7 +6,7 @@ import { TimerProvider } from "@/components/TimerProvider";
 import { ProgressProvider } from "@/components/ProgressProvider";
 import { Header } from "@/components/Header";
 import { AiMentor } from "@/components/AiMentor";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ParticleBackground } from "@/components/ParticleBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,19 +35,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{ scrollBehavior: "smooth" }}>
+    <html lang="en" className="dark" style={{ scrollBehavior: "smooth" }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased bg-gray-50 dark:bg-[#020005] text-gray-900 dark:text-[#e8ecf5]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased bg-[#020005] text-[#e8ecf5]`}
       >
-        <ThemeProvider>
-          <ProgressProvider>
-            <TimerProvider>
-              <Header />
-              <AiMentor />
-              {children}
-            </TimerProvider>
-          </ProgressProvider>
-        </ThemeProvider>
+        <ParticleBackground />
+        <ProgressProvider>
+          <TimerProvider>
+            <Header />
+            <AiMentor />
+            <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
+          </TimerProvider>
+        </ProgressProvider>
       </body>
     </html>
   );

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useProgress } from "@/components/ProgressProvider";
-import { useTheme } from "@/components/ThemeProvider";
 import React, { useState, useEffect } from "react";
 
 // ── Galaxy Star Field ───────────────────────────────────────
@@ -160,8 +159,6 @@ function SectionDivider() {
 // ═══════════════════════════════════════════════════════════
 export default function Home() {
   const { progress } = useProgress();
-  const { theme, toggle } = useTheme();
-
   const totalLecturesAcrossAll = Object.values(progress.lectures).reduce(
     (acc, subjObj) => acc + Object.keys(subjObj).filter(k => subjObj[k]).length, 0
   );
@@ -184,38 +181,6 @@ export default function Home() {
           HERO
       ═══════════════════════════════════════════════════ */}
       <section style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "hidden", padding: "2rem" }}>
-        {/* Theme toggle */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          onClick={toggle}
-          aria-label="Toggle theme"
-          style={{
-            position: "absolute",
-            top: "1.5rem",
-            right: "1.5rem",
-            zIndex: 20,
-            width: "2.75rem",
-            height: "2.75rem",
-            borderRadius: "50%",
-            background: theme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
-            border: theme === "dark" ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(0,0,0,0.1)",
-            color: theme === "dark" ? "#c4b5fd" : "#7c3aed",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "all 0.3s ease",
-            boxShadow: theme === "dark" ? "0 0 20px rgba(124,58,237,0.15)" : "0 2px 8px rgba(0,0,0,0.08)",
-          }}
-        >
-          {theme === "dark" ? (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          ) : (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          )}
-        </motion.button>
         {/* Background */}
         <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" }}>
           <div className="gate-bg-animate" style={{ position: "absolute", inset: "-50%", width: "200%", height: "200%", background: "radial-gradient(ellipse at 30% 20%, rgba(124,58,237,0.18) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(6,182,212,0.12) 0%, transparent 50%)" }} />
@@ -233,9 +198,9 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className="bg-white/80 dark:bg-black/40 backdrop-blur-md p-8 rounded-3xl" style={{ position: "relative", zIndex: 10, textAlign: "center", maxWidth: "600px", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)" }}>
+        <div className="bg-black/40 backdrop-blur-md p-8 rounded-3xl" style={{ position: "relative", zIndex: 10, textAlign: "center", maxWidth: "600px", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)" }}>
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            className="text-violet-900 dark:text-violet-300 border-violet-500/30"
+            className="text-violet-300 border-violet-500/30"
             style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.75rem", padding: "0.4rem 1rem", borderRadius: "99px", background: "rgba(124,58,237,0.1)", border: "1px solid", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}
           >
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#7c3aed", boxShadow: "0 0 8px #7c3aed", animation: "neonPulse 2s infinite" }} />
@@ -462,7 +427,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.5 }}
           className="bg-violet-50/50 dark:bg-transparent border border-violet-200 dark:border-violet-500/20"
-          style={{ marginTop: "2rem", padding: "1.5rem 1.75rem", borderRadius: "1rem", background: theme === "dark" ? "linear-gradient(135deg, rgba(124,58,237,0.07), rgba(34,211,238,0.04))" : undefined, display: "flex", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}
+          style={{ marginTop: "2rem", padding: "1.5rem 1.75rem", borderRadius: "1rem", background: "linear-gradient(135deg, rgba(124,58,237,0.07), rgba(34,211,238,0.04))", display: "flex", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}
         >
           <div style={{ fontSize: "1.5rem", lineHeight: 1, flexShrink: 0 }}>⚡</div>
           <div>
