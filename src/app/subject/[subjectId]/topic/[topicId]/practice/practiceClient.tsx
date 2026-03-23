@@ -16,6 +16,7 @@ type Q =
       options: [string, string, string, string];
       answer: "A" | "B" | "C" | "D";
       solution: string;
+      diagram?: string;
     }
   | {
       id: string;
@@ -23,7 +24,32 @@ type Q =
       question: string;
       answer: string;
       solution: string;
+      diagram?: string;
     };
+
+// ── Diagram renderer (ASCII text diagram in a styled box) ──
+function DiagramBox({ text }: { text: string }) {
+  return (
+    <div style={{
+      marginTop: "0.75rem",
+      padding: "1rem",
+      borderRadius: "0.75rem",
+      background: "rgba(124,58,237,0.06)",
+      border: "1px solid rgba(124,58,237,0.2)",
+      fontFamily: "var(--font-geist-mono), monospace",
+      fontSize: "0.75rem",
+      color: "#c4b5fd",
+      lineHeight: 1.6,
+      whiteSpace: "pre-wrap",
+      overflowX: "auto",
+    }}>
+      <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(124,58,237,0.6)", marginBottom: "0.5rem" }}>
+        Circuit / Diagram
+      </div>
+      {text}
+    </div>
+  );
+}
 
 // ── LOCKED: utility function ──────────────────────────────
 function safeJsonParse(text: string) {
@@ -36,13 +62,23 @@ function safeJsonParse(text: string) {
   return JSON.parse(s);
 }
 
-// MCQ option color logic (LOCKED: semantics unchanged)
+// MCQ option color logic
 function getOptionStyle(
   label: string,
   selected: string | null,
-  correct: string
+  correct: string,
+  pendingAnswer?: string | null
 ) {
+  // Before submission: show pending highlight
   if (selected == null) {
+    if (pendingAnswer === label) {
+      return {
+        border: "1px solid rgba(139,92,246,0.7)",
+        background: "rgba(139,92,246,0.12)",
+        color: "#c4b5fd",
+        boxShadow: "0 0 12px rgba(139,92,246,0.15)",
+      };
+    }
     return {
       border: "1px solid rgba(255,255,255,0.13)",
       background: "rgba(255,255,255,0.02)",
@@ -104,6 +140,8 @@ export function PracticeClient({
   
   // Numerical input draft state
   const [numericalDraft, setNumericalDraft] = useState("");
+  // MCQ pending selection (before submit)
+  const [pendingAnswer, setPendingAnswer] = useState<string | null>(null);
 
   const current = questions[idx];
 
@@ -153,6 +191,7 @@ export function PracticeClient({
       setQuestions(qs);
       setIdx(0);
       setSelected(null);
+      setPendingAnswer(null);
       setNumericalDraft("");
       setShowSolution(false);
     } catch (e) {
@@ -184,8 +223,6 @@ export function PracticeClient({
     recordPractice(topicId, correct);
   };
 
-  const choose = (ans: string) => submitAnswer(ans);
-
   const isCorrect = useMemo(() => {
     if (!current || !selected) return null;
     if (current.type === "mcq") return selected === current.answer;
@@ -194,6 +231,7 @@ export function PracticeClient({
 
   const next = () => {
     setSelected(null);
+    setPendingAnswer(null);
     setNumericalDraft("");
     setShowSolution(false);
     setIdx((i) => Math.min(questions.length - 1, i + 1));
@@ -377,6 +415,7 @@ export function PracticeClient({
                 }}
               >
                 <MathText text={current.question} />
+                {current.diagram && <DiagramBox text={current.diagram} />}
               </motion.div>
             </AnimatePresence>
 
@@ -385,13 +424,12 @@ export function PracticeClient({
               <div style={{ display: "grid", gap: "0.5rem" }}>
                 {(["A", "B", "C", "D"] as const).map((label, i) => {
                   const option = current.options[i];
-                  const optStyle = getOptionStyle(label, selected, current.answer);
+                  const optStyle = getOptionStyle(label, selected, current.answer, pendingAnswer);
 
                   return (
-                    // ── LOCKED: onClick + disabled ─
                     <button
                       key={label}
-                      onClick={() => choose(label)}
+                      onClick={() => { if (!selected) setPendingAnswer(label); }}
                       disabled={!!selected}
                       style={{
                         width: "100%",
@@ -435,6 +473,22 @@ export function PracticeClient({
                     </button>
                   );
                 })}
+                {/* Submit button for MCQ - only shows when an option is pending and not yet evaluated */}
+                {pendingAnswer && !selected && (
+                  <button
+                    onClick={() => submitAnswer(pendingAnswer)}
+                    className="btn-primary active-compress"
+                    style={{
+                      marginTop: "0.25rem",
+                      padding: "0.55rem 1.5rem",
+                      fontSize: "0.85rem",
+                      borderRadius: "99px",
+                      justifySelf: "start",
+                    }}
+                  >
+                    Submit
+                  </button>
+                )}
               </div>
             ) : (
               /* Numerical input */
@@ -453,24 +507,23 @@ export function PracticeClient({
                   >
                     Your numerical answer
                   </span>
-                  {/* ── LOCKED: onChange + value ─ */}
                   <input
                     className="input-neon font-mono"
                     style={{ padding: "0.55rem 0.85rem", fontSize: "0.875rem", width: "12rem" }}
-                    onChange={(e) => setSelected(e.target.value)}
-                    value={selected ?? ""}
+                    onChange={(e) => setNumericalDraft(e.target.value)}
+                    value={selected ?? numericalDraft}
                     placeholder="e.g., 3.14"
-                    disabled={!!selected && isCorrect !== null}
+                    disabled={!!selected}
                   />
                 </label>
-                {/* ── LOCKED: onClick ─ */}
                 <button
                   onClick={() => {
-                    if (!selected) return;
-                    setSelected(selected);
+                    if (!numericalDraft.trim() || selected) return;
+                    submitAnswer(numericalDraft.trim());
                   }}
                   className="btn-secondary"
                   style={{ padding: "0.55rem 1rem", fontSize: "0.8rem" }}
+                  disabled={!numericalDraft.trim() || !!selected}
                 >
                   Check
                 </button>

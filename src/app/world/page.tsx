@@ -162,15 +162,16 @@ export default function WorldPage() {
     <div style={{
       position: "fixed", inset: 0,
       display: "flex", flexDirection: "column",
-      background: "#000",
+      background: "linear-gradient(180deg, #050810 0%, #0a0e1a 40%, #0d1225 100%)",
     }}>
-      {/* Multi-layer background (matches homepage) */}
+      {/* Multi-layer background — richer, less dark */}
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
-        {/* Radial glows */}
-        <div style={{ position: "absolute", top: "-20%", left: "15%", width: "700px", height: "500px", background: "radial-gradient(ellipse, rgba(109,40,217,0.12) 0%, transparent 60%)" }} />
-        <div style={{ position: "absolute", bottom: "-10%", right: "10%", width: "600px", height: "400px", background: "radial-gradient(ellipse, rgba(34,211,238,0.06) 0%, transparent 60%)" }} />
+        {/* Radial glows — stronger */}
+        <div style={{ position: "absolute", top: "-15%", left: "10%", width: "800px", height: "600px", background: "radial-gradient(ellipse, rgba(109,40,217,0.18) 0%, transparent 55%)" }} />
+        <div style={{ position: "absolute", bottom: "-5%", right: "5%", width: "700px", height: "500px", background: "radial-gradient(ellipse, rgba(34,211,238,0.10) 0%, transparent 55%)" }} />
+        <div style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "500px", height: "500px", background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 60%)", borderRadius: "50%" }} />
         {/* Circuit grid */}
-        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.06 }}>
+        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.08 }}>
           <defs>
             <pattern id="w-circuit" width="80" height="80" patternUnits="userSpaceOnUse">
               <path d="M0 40 H30 V10 H50 V40 H80" stroke="#7c3aed" strokeWidth="0.5" fill="none" />
@@ -181,19 +182,28 @@ export default function WorldPage() {
           </defs>
           <rect width="100%" height="100%" fill="url(#w-circuit)" />
         </svg>
-        {/* Star dots */}
-        {Array.from({ length: 60 }).map((_, i) => (
-          <div key={i} style={{
-            position: "absolute",
-            top: `${(i * 17 + 7) % 100}%`,
-            left: `${(i * 31 + 13) % 100}%`,
-            width: `${1 + (i % 3)}px`,
-            height: `${1 + (i % 3)}px`,
-            borderRadius: "50%",
-            background: "white",
-            opacity: 0.08 + (i % 5) * 0.04,
-          }} />
-        ))}
+        {/* Star particles — more stars, varied sizes, subtle twinkle */}
+        {Array.from({ length: 120 }).map((_, i) => {
+          const size = 0.8 + (i % 4) * 0.6;
+          const isPurple = i % 7 === 0;
+          const isCyan = i % 11 === 0;
+          const color = isPurple ? "#c4b5fd" : isCyan ? "#67e8f9" : "white";
+          return (
+            <div key={i} style={{
+              position: "absolute",
+              top: `${(i * 13 + 3) % 100}%`,
+              left: `${(i * 29 + 7) % 100}%`,
+              width: `${size}px`,
+              height: `${size}px`,
+              borderRadius: "50%",
+              background: color,
+              opacity: 0.12 + (i % 6) * 0.06,
+              boxShadow: size > 1.5 ? `0 0 ${size * 3}px ${color}40` : "none",
+            }} />
+          );
+        })}
+        {/* Subtle scan lines */}
+        <div style={{ position: "absolute", inset: 0, background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.008) 2px, rgba(255,255,255,0.008) 4px)", pointerEvents: "none" }} />
       </div>
 
       {/* Header */}

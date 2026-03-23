@@ -104,6 +104,26 @@ export function TheorySection({
         </div>
       </div>
 
+      {/* Analog playlist note */}
+      {subjectId === "analog" && videoIds.length > 0 && (
+        <div style={{
+          marginBottom: "1rem",
+          padding: "0.75rem 1rem",
+          borderRadius: "0.75rem",
+          background: "rgba(14,165,233,0.08)",
+          border: "1px solid rgba(14,165,233,0.2)",
+          fontSize: "0.78rem",
+          color: "#7dd3fc",
+          display: "flex",
+          alignItems: "flex-start",
+          gap: "0.5rem",
+          lineHeight: 1.5,
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: "0.15rem" }}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>This playlist contains 105+ videos. Refer to the <a href="https://www.youtube.com/playlist?list=PLs5_Rtf2P2r674CTMNJ3odeHk9Wtb-WWl" target="_blank" rel="noreferrer" style={{ color: "#38bdf8", textDecoration: "underline", textUnderlineOffset: "2px" }}>full YouTube playlist</a> to access all lectures.</span>
+        </div>
+      )}
+
       {videoIds.length === 0 || !playlistId ? (
         <div style={{ padding: "2rem", fontSize: "0.85rem", color: "rgba(148,163,184,0.5)", textAlign: "center" }}>
           No lectures found for this playlist.

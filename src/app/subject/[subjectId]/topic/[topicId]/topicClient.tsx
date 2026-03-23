@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { getStoredAiConfig } from "@/components/ApiKeySettings";
 import { MathText } from "@/components/MathText";
@@ -20,17 +20,44 @@ type NotesState =
   | { status: "loading"; text: string }
   | { status: "error"; text: string; error: string };
 
+type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 const notesKey = (subjectId: string, topicId: string) =>
   `gate_ai_v2_notes_${subjectId}__${topicId}`;
+
+// ── Glassmorphism style constants ──────────────────────────
+const glassPanel: React.CSSProperties = {
+  background:
+    "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+  backdropFilter: "blur(24px)",
+  WebkitBackdropFilter: "blur(24px)",
+  border: "1px solid rgba(255,255,255,0.09)",
+  borderTopColor: "rgba(255,255,255,0.16)",
+  borderRadius: "1.25rem",
+  padding: "1.5rem",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset",
+};
 
 export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Props) {
   // ── LOCKED: all state ────────────────────────────────────
   const [notes, setNotes] = useState<NotesState>({ status: "idle", text: "" });
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const cached = localStorage.getItem(notesKey(subjectId, topicId));
     if (cached) setNotes({ status: "idle", text: cached });
   }, [subjectId, topicId]);
+
+  // Auto-scroll chat to bottom
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages, chatLoading]);
 
   const canStart = useMemo(() => {
     const cfg = getStoredAiConfig();
@@ -63,12 +90,64 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
       const text = String(json.text ?? "");
       localStorage.setItem(notesKey(subjectId, topicId), text);
       setNotes({ status: "idle", text });
+      // Reset chat when new notes are generated
+      setChatMessages([]);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Unknown error";
       setNotes({ status: "error", text: "", error: toFriendlyAiError(msg) });
     }
   };
-  // ─────────────────────────────────────────────────────────
+
+  // ── Chat send handler ──────────────────────────────────
+  const sendChat = useCallback(async () => {
+    const message = chatInput.trim();
+    if (!message || chatLoading) return;
+
+    const cfg = getStoredAiConfig();
+    if (!cfg.apiKey?.trim()) return;
+
+    const userMsg: ChatMessage = { role: "user", content: message };
+    setChatMessages((prev) => [...prev, userMsg]);
+    setChatInput("");
+    setChatLoading(true);
+
+    // Build history: start with the notes as system context, then prior chat
+    const chatHistory: ChatMessage[] = [
+      { role: "assistant", content: notes.text },
+      ...chatMessages,
+      userMsg,
+    ];
+
+    try {
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          apiKey: cfg.apiKey,
+          model: cfg.model,
+          provider: cfg.provider,
+          mode: "chat",
+          subject: subjectName,
+          topic: topicTitle,
+          chatHistory,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error ?? "Chat failed");
+      const text = String(json.text ?? "");
+      setChatMessages((prev) => [...prev, { role: "assistant", content: text }]);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Unknown error";
+      setChatMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: `Error: ${toFriendlyAiError(msg)}` },
+      ]);
+    } finally {
+      setChatLoading(false);
+    }
+  }, [chatInput, chatLoading, chatMessages, notes.text, subjectName, topicTitle]);
+
+  const notesGenerated = notes.text && notes.status !== "loading";
 
   return (
     <motion.div
@@ -85,17 +164,7 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
           y: -3,
         }}
         transition={{ duration: 0.2 }}
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.09)",
-          borderTopColor: "rgba(255,255,255,0.16)",
-          borderRadius: "1.25rem",
-          padding: "1.5rem",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset",
-        }}
+        style={glassPanel}
       >
         <div
           style={{
@@ -128,10 +197,11 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
                   color: "rgba(16,185,129,0.8)",
                 }}
               >
-                ✓ Cached
+                Cached
               </div>
             )}
           </div>
+
         </div>
 
         {/* ── LOCKED: onClick + disabled ─ */}
@@ -147,7 +217,11 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
           }}
           disabled={notes.status === "loading"}
         >
-          {notes.status === "loading" ? "Generating..." : "Generate Notes"}
+          {notes.status === "loading"
+            ? "Generating..."
+            : notes.text
+              ? "Regenerate Notes"
+              : "Generate Notes"}
         </button>
 
         {/* Error state */}
@@ -196,6 +270,161 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
             </div>
           )}
         </div>
+
+        {/* ── CHAT SECTION (visible after notes generated) ─── */}
+        {notesGenerated && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ marginTop: "1.25rem" }}
+          >
+            {/* Chat messages area */}
+            {chatMessages.length > 0 && (
+              <div
+                style={{
+                  maxHeight: "24rem",
+                  overflowY: "auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.6rem",
+                  marginBottom: "0.75rem",
+                  padding: "0.75rem",
+                  borderRadius: "0.75rem",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "rgba(0,0,0,0.15)",
+                }}
+              >
+                {chatMessages.map((msg, i) => {
+                  const isUser = msg.role === "user";
+
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        alignSelf: isUser ? "flex-end" : "flex-start",
+                        maxWidth: "85%",
+                      }}
+                    >
+                      <div
+                        style={{
+                          padding: "0.65rem 0.9rem",
+                          borderRadius: isUser
+                            ? "0.75rem 0.75rem 0.2rem 0.75rem"
+                            : "0.75rem 0.75rem 0.75rem 0.2rem",
+                          background: isUser
+                            ? "linear-gradient(135deg, rgba(139,92,246,0.35), rgba(109,40,217,0.25))"
+                            : "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
+                          border: isUser
+                            ? "1px solid rgba(139,92,246,0.3)"
+                            : "1px solid rgba(255,255,255,0.08)",
+                          fontSize: "0.83rem",
+                          color: isUser ? "#e0d4fc" : "#cbd5e1",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {isUser ? msg.content : <MathText text={msg.content} />}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+
+                {/* Loading indicator for chat */}
+                {chatLoading && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    style={{
+                      alignSelf: "flex-start",
+                      padding: "0.65rem 0.9rem",
+                      borderRadius: "0.75rem 0.75rem 0.75rem 0.2rem",
+                      background:
+                        "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      fontSize: "0.83rem",
+                      color: "rgba(148,163,184,0.7)",
+                    }}
+                  >
+                    <span className="loading-pulse">Thinking...</span>
+                  </motion.div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+            )}
+
+            {/* Chat input */}
+            <div
+              style={{
+                display: "flex",
+                gap: "0.5rem",
+                alignItems: "center",
+              }}
+            >
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChat();
+                  }
+                }}
+                placeholder="Ask a follow-up question..."
+                disabled={chatLoading}
+                style={{
+                  flex: 1,
+                  padding: "0.7rem 1rem",
+                  fontSize: "0.85rem",
+                  borderRadius: "0.75rem",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "rgba(0,0,0,0.25)",
+                  color: "#e2e8f0",
+                  outline: "none",
+                  transition: "border-color 0.2s",
+                }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)")
+                }
+                onBlur={(e) =>
+                  (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")
+                }
+              />
+              <button
+                onClick={sendChat}
+                disabled={chatLoading || !chatInput.trim()}
+                className="btn-primary"
+                style={{
+                  padding: "0.7rem 1rem",
+                  borderRadius: "0.75rem",
+                  fontSize: "0.85rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                  flexShrink: 0,
+                }}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+                Send
+              </button>
+            </div>
+
+          </motion.div>
+        )}
       </motion.section>
 
       {/* ── LET'S PRACTICE (below notes) ────────────── */}

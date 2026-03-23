@@ -30,6 +30,7 @@ const QuestionSchema = z.discriminatedUnion("type", [
     options: z.tuple([z.string().min(1), z.string().min(1), z.string().min(1), z.string().min(1)]),
     answer: z.enum(["A", "B", "C", "D"]),
     solution: z.string().min(20),
+    diagram: z.string().optional(),
   }),
   z.object({
     id: z.string().min(1),
@@ -37,6 +38,7 @@ const QuestionSchema = z.discriminatedUnion("type", [
     question: z.string().min(10),
     answer: NumericAnswer,
     solution: z.string().min(20),
+    diagram: z.string().optional(),
   }),
 ]);
 
@@ -238,7 +240,7 @@ export async function POST(req: Request) {
     const apiKey = resolveApiKey();
 
     const systemBase =
-      "You are a precise GATE EC tutor. Be strict about topic boundaries. Do not mix topics. Do not repeat. Be concise and correct. Prefer correctness over creativity.";
+      "You are a precise GATE EC tutor. Be strict about topic boundaries. Do not mix topics. Do not repeat. Be concise and correct. Prefer correctness over creativity. ALWAYS use bullet points and short explanations. NEVER write long paragraphs. Keep answers exam-focused and structured.";
     
     const run = async (args: { apiKey: string; model: string; messages: Array<{role: "system"|"user"|"assistant", content: string}> }) => {
       if (body.provider === "gemini") return await callGemini(args);
@@ -250,7 +252,7 @@ export async function POST(req: Request) {
     if (body.mode === "chat") {
       const history = body.chatHistory ?? [];
       const messages: Array<{role: "system"|"user"|"assistant", content: string}> = [
-        { role: "system", content: "You are a world-class GATE EC Personal Mentor. You NEVER give vague or generic advice. You understand the GATE syllabus deeply. You use step-by-step logic, embed LaTeX formulas using $...$ or $$...$$, and strictly stay within the subject/topic context provided. If asked a generic question outside GATE EC, politely refuse." }
+        { role: "system", content: "You are a world-class GATE EC Personal Mentor. You NEVER give vague or generic advice. You understand the GATE syllabus deeply. You use step-by-step logic, embed LaTeX formulas using $...$ or $$...$$, and strictly stay within the subject/topic context provided. If asked a generic question outside GATE EC, politely refuse. ALWAYS use bullet points and short explanations. NEVER write long paragraphs. Keep answers exam-focused, concise, and structured." }
       ];
       
       const contextPrefix = `[User Context]\nSubject: ${body.subject || "General"}\nTopic: ${body.topic || "General"}\nUser question follows:\n\n`;
@@ -333,6 +335,7 @@ export async function POST(req: Request) {
           "Mix question types (any mix is fine), but include both Numerical and Conceptual MCQs across the full set.",
           "Each question must be solvable from the topic alone and have ONE correct answer.",
           "Avoid vague theory-only questions. Prefer computation/derivation/checks typical of GATE.",
+          "If a question involves a circuit, block diagram, or signal plot, include a 'diagram' field with a SHORT ASCII text description (e.g., 'R1(10k) -- C1(1uF) in series, input Vi across both, output Vo across C1').",
           "",
           "Anti-repetition constraints:",
           "- Do NOT repeat any of these earlier questions (even reworded):",
@@ -345,7 +348,7 @@ export async function POST(req: Request) {
           "- Numerical answer must be a single number (no units).",
           "- Do NOT include trailing commas anywhere in the JSON.",
           "- Do NOT wrap JSON in ```json ... ```.",
-          "- Solutions must be step-by-step and end with 'Final answer: <...>'.",
+          "- Solutions must follow this format: Step 1: ... Step 2: ... Final Answer: <answer>",
           "- Do a quick self-check in the solution to reduce mistakes.",
         ].join("\n");
 
@@ -400,7 +403,19 @@ export async function POST(req: Request) {
       `Subject: ${body.subject}`,
       `Topic: ${body.topic}`,
       "",
-      "Provide a step-by-step solution ONLY for this question, strictly within this topic:",
+      "Provide a STEP-BY-STEP solution in this exact format:",
+      "Step 1: <description>",
+      "Step 2: <description>",
+      "...",
+      "Final Answer: <answer>",
+      "",
+      "Rules:",
+      "- Each step must be short and clear",
+      "- No unnecessary theory",
+      "- Include relevant formulas using LaTeX ($...$)",
+      "- End with 'Final Answer: <value>'",
+      "",
+      "Question:",
       body.question ?? "",
       "",
       body.userAnswer ? `User answer: ${body.userAnswer}` : "",

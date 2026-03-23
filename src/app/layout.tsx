@@ -6,6 +6,7 @@ import { TimerProvider } from "@/components/TimerProvider";
 import { ProgressProvider } from "@/components/ProgressProvider";
 import { Header } from "@/components/Header";
 import { AiMentor } from "@/components/AiMentor";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,13 +39,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
       >
-        <ProgressProvider>
-          <TimerProvider>
-            <Header />
-            <AiMentor />
-            {children}
-          </TimerProvider>
-        </ProgressProvider>
+        <ThemeProvider>
+          <ProgressProvider>
+            <TimerProvider>
+              <Header />
+              <AiMentor />
+              {children}
+            </TimerProvider>
+          </ProgressProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
