@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    GATE AI COMMAND CENTER — PREMIUM DESIGN SYSTEM v2
    Ultra-dark base, glassmorphism, neon gradient accents
