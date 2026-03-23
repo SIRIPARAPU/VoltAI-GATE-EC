@@ -18,8 +18,6 @@ body {
 
 /* === BASE THEME ========================================== */
 body {
-  background: #050810;
-  color: #e8ecf5;
   font-family: var(--font-space-grotesk), 'Inter', Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,7 +26,7 @@ body {
 
 /* === MULTI-LAYER BACKGROUND ============================== */
 /* Using a single fixed layer with no background-attachment: fixed (causes jank) */
-body::before {
+.dark body::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -43,7 +41,7 @@ body::before {
   transform: translateZ(0);
 }
 
-body::after {
+.dark body::after {
   content: '';
   position: fixed;
   inset: 0;
@@ -101,21 +99,31 @@ body::after {
 
 /* === GLASS UTILITY ====================================== */
 .glass {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 1.25rem;
   transform: translateZ(0);
 }
 
+.dark .glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .glass-strong {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 1.5rem;
   transform: translateZ(0);
+}
+
+.dark .glass-strong {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* === NEON GLOW BORDERS ================================== */
@@ -304,12 +312,18 @@ body::after {
 
 /* === INPUT FOCUS GLOW =================================== */
 .input-neon {
-  background: rgba(0,0,0,0.2);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(0,0,0,0.10);
   border-radius: 0.75rem;
-  color: #e8ecf5;
+  color: #0f172a;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   outline: none;
+}
+
+.dark .input-neon {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: #e8ecf5;
 }
 
 .input-neon:focus {
@@ -321,6 +335,10 @@ body::after {
 
 /* === SELECT STYLING ===================================== */
 select.input-neon option {
+  background: #ffffff;
+  color: #0f172a;
+}
+.dark select.input-neon option {
   background: #1a1f30;
   color: #e8ecf5;
 }
@@ -337,13 +355,20 @@ select.input-neon option {
 
 /* === TIMER DISPLAY ====================================== */
 .timer-display {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(0,0,0,0.10);
   border-radius: 0.5rem;
   padding: 0.25rem 0.65rem;
   font-family: 'Geist Mono', monospace;
-  color: #e8ecf5;
+  color: #0f172a;
   font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 0 10px rgba(109,40,217,0.05);
+}
+
+.dark .timer-display {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: #e8ecf5;
   box-shadow: inset 0 1px 0 rgba(0,0,0,0.3), 0 0 10px rgba(109,40,217,0.05);
 }
 

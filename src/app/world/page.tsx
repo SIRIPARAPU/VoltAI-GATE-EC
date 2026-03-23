@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTheme } from "@/components/ThemeProvider";
+import { useEffect, useRef } from "react";
 
 // ── Subject layout data ─────────────────────────────────────
 const LEFT = [
@@ -154,84 +156,181 @@ function DashboardHub() {
   );
 }
 
+// ── Particle System Setup ──────────────────────────────────
+function ParticleSystem({ isLight }: { isLight: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let params = {
+      w: window.innerWidth,
+      h: window.innerHeight,
+      particles: [] as any[],
+    };
+
+    const init = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      params.w = canvas.width;
+      params.h = canvas.height;
+    };
+
+    const createParticles = () => {
+      params.particles = [];
+      const density = window.innerWidth < 600 ? 50 : 150;
+      for (let i = 0; i < density; i++) {
+        params.particles.push({
+          x: Math.random() * params.w,
+          y: Math.random() * params.h,
+          r: Math.random() * 1.5 + 0.5,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          depth: Math.random(), // 0 to 1
+          isBlue: Math.random() > 0.8,
+        });
+      }
+    };
+
+    init();
+    createParticles();
+
+    window.addEventListener("resize", () => {
+      init();
+      createParticles();
+    });
+
+    let animationFrameId: number;
+    const render = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, params.w, params.h);
+
+      params.particles.forEach((p) => {
+        p.x += p.vx * (p.depth + 0.5);
+        p.y += p.vy * (p.depth + 0.5);
+
+        if (p.x < 0) p.x = params.w;
+        if (p.x > params.w) p.x = 0;
+        if (p.y < 0) p.y = params.h;
+        if (p.y > params.h) p.y = 0;
+
+        ctx.beginPath();
+        const baseAlpha = isLight ? 0.2 : 0.8;
+        const color = p.isBlue 
+          ? `rgba(103, 232, 249, ${p.depth * baseAlpha})` 
+          : `rgba(255, 255, 255, ${p.depth * baseAlpha})`;
+        ctx.fillStyle = color;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Glow
+        if (p.r > 1.2 && !isLight) {
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = color;
+        } else {
+          ctx.shadowBlur = 0;
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", init);
+    };
+  }, [isLight]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "absolute",
+        inset: 0,
+        pointerEvents: "none",
+        zIndex: 1,
+      }}
+    />
+  );
+}
+
 // ═══════════════════════════════════════════════════════════
 // WORLD PAGE
 // ═══════════════════════════════════════════════════════════
 export default function WorldPage() {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   return (
     <div style={{
       position: "fixed", inset: 0,
       display: "flex", flexDirection: "column",
-      background: "linear-gradient(180deg, #050810 0%, #0a0e1a 40%, #0d1225 100%)",
+      background: isLight 
+        ? "linear-gradient(180deg, #e6f0ff 0%, #ffffff 100%)" 
+        : "linear-gradient(180deg, #050810 0%, #0a0e1a 40%, #0d1225 100%)",
     }}>
       {/* Multi-layer background — richer, less dark */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+      <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", zIndex: 0 }}>
         {/* Radial glows — stronger */}
         <div style={{ position: "absolute", top: "-15%", left: "10%", width: "800px", height: "600px", background: "radial-gradient(ellipse, rgba(109,40,217,0.18) 0%, transparent 55%)" }} />
         <div style={{ position: "absolute", bottom: "-5%", right: "5%", width: "700px", height: "500px", background: "radial-gradient(ellipse, rgba(34,211,238,0.10) 0%, transparent 55%)" }} />
+        
+        {/* "Ambient light" increase for light mode */}
+        {isLight && (
+          <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.4)" }} />
+        )}
+
         <div style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "500px", height: "500px", background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 60%)", borderRadius: "50%" }} />
         {/* Circuit grid */}
-        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.08 }}>
+        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: isLight ? 0.03 : 0.08 }}>
           <defs>
             <pattern id="w-circuit" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M0 40 H30 V10 H50 V40 H80" stroke="#7c3aed" strokeWidth="0.5" fill="none" />
-              <path d="M40 0 V25 H60 V55 H40 V80" stroke="#22d3ee" strokeWidth="0.5" fill="none" />
-              <circle cx="30" cy="10" r="2" fill="#7c3aed" opacity="0.5" />
-              <circle cx="50" cy="40" r="2" fill="#22d3ee" opacity="0.5" />
+              <path d="M0 40 H30 V10 H50 V40 H80" stroke={isLight ? "#000" : "#7c3aed"} strokeWidth="0.5" fill="none" />
+              <path d="M40 0 V25 H60 V55 H40 V80" stroke={isLight ? "#000" : "#22d3ee"} strokeWidth="0.5" fill="none" />
+              <circle cx="30" cy="10" r="2" fill={isLight ? "#000" : "#7c3aed"} opacity="0.5" />
+              <circle cx="50" cy="40" r="2" fill={isLight ? "#000" : "#22d3ee"} opacity="0.5" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#w-circuit)" />
         </svg>
-        {/* Star particles — more stars, varied sizes, subtle twinkle */}
-        {Array.from({ length: 120 }).map((_, i) => {
-          const size = 0.8 + (i % 4) * 0.6;
-          const isPurple = i % 7 === 0;
-          const isCyan = i % 11 === 0;
-          const color = isPurple ? "#c4b5fd" : isCyan ? "#67e8f9" : "white";
-          return (
-            <div key={i} style={{
-              position: "absolute",
-              top: `${(i * 13 + 3) % 100}%`,
-              left: `${(i * 29 + 7) % 100}%`,
-              width: `${size}px`,
-              height: `${size}px`,
-              borderRadius: "50%",
-              background: color,
-              opacity: 0.12 + (i % 6) * 0.06,
-              boxShadow: size > 1.5 ? `0 0 ${size * 3}px ${color}40` : "none",
-            }} />
-          );
-        })}
-        {/* Subtle scan lines */}
-        <div style={{ position: "absolute", inset: 0, background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.008) 2px, rgba(255,255,255,0.008) 4px)", pointerEvents: "none" }} />
+
+        <ParticleSystem isLight={isLight} />
+
+        {/* Subtle scan lines (removed fog density effectively) */}
+        {!isLight && (
+          <div style={{ position: "absolute", inset: 0, background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.008) 2px, rgba(255,255,255,0.008) 4px)", pointerEvents: "none" }} />
+        )}
       </div>
 
       {/* Header */}
-      <div style={{
+      <div className="border-gray-200 dark:border-white/5" style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "1.25rem 2rem",
-        borderBottom: "1px solid rgba(255,255,255,0.05)",
+        borderBottomWidth: "1px",
         flexShrink: 0,
         position: "relative",
-        zIndex: 1,
+        zIndex: 10,
       }}>
         <div>
-          <div style={{ fontSize: "0.5rem", fontWeight: 800, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(124,58,237,0.75)" }}>
+          <div className="text-violet-700 dark:text-violet-500/80" style={{ fontSize: "0.5rem", fontWeight: 800, letterSpacing: "0.22em", textTransform: "uppercase" }}>
             VOLTAI
           </div>
-          <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f1f5f9", letterSpacing: "-0.02em" }}>
+          <div className="text-gray-900 dark:text-white" style={{ fontSize: "0.95rem", fontWeight: 700, letterSpacing: "-0.02em" }}>
             GATE Universe
           </div>
         </div>
         <Link
           href="/"
+          className="bg-white/80 dark:bg-black/30 border border-gray-200 dark:border-white/10 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-white/5"
           style={{
             display: "flex", alignItems: "center", gap: "0.4rem",
             padding: "0.5rem 1rem",
             borderRadius: "0.75rem",
-            background: "rgba(0,0,0,0.3)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            color: "#c4b5fd", fontSize: "0.78rem", fontWeight: 600,
+            fontSize: "0.78rem", fontWeight: 600,
             textDecoration: "none", transition: "all 0.2s ease",
           }}
         >

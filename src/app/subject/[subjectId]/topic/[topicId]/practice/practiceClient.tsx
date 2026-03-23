@@ -246,19 +246,7 @@ export function PracticeClient({
           MAIN PRACTICE PANEL
       ══════════════════════════════════════════════════════ */}
       <section
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.09)",
-          borderTopColor: "rgba(255,255,255,0.16)",
-          borderRadius: "1.5rem",
-          padding: "1.25rem",
-          boxShadow:
-            "0 4px 32px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.05) inset",
-        }}
-        className="lg:col-span-2"
+        className="bg-white/80 dark:bg-white/5 backdrop-blur-2xl border border-gray-200 dark:border-white/10 rounded-[1.5rem] p-5 shadow-xl lg:col-span-2"
       >
         {/* Header row */}
         <div
@@ -407,10 +395,10 @@ export function PracticeClient({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.22 }}
+                className="bg-gray-50 dark:bg-black/20 border-gray-200 dark:border-white/5 text-gray-900 dark:text-gray-100"
                 style={{
                   borderRadius: "0.85rem",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  background: "rgba(0,0,0,0.22)",
+                  borderWidth: "1px",
                   padding: "1rem",
                 }}
               >
@@ -615,11 +603,11 @@ export function PracticeClient({
                   style={{ overflow: "hidden" }}
                 >
                   <div
+                    className="bg-gray-100 dark:bg-black/30 border-gray-200 dark:border-white/10"
                     style={{
                       borderRadius: "1rem",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      background: "rgba(0,0,0,0.3)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 30px rgba(0,0,0,0.2)",
+                      borderWidth: "1px",
+                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 30px rgba(0,0,0,0.1)",
                       padding: "1.25rem",
                       marginTop: "0.5rem",
                     }}
@@ -653,16 +641,8 @@ export function PracticeClient({
           RULES SIDEBAR
       ══════════════════════════════════════════════════════ */}
       <aside
+        className="bg-purple-50/50 dark:bg-white/5 backdrop-blur-xl border border-purple-200 dark:border-white/10 rounded-[1.5rem] p-5 shadow-lg max-lg:-order-1"
         style={{
-          background:
-            "linear-gradient(135deg, rgba(109,40,217,0.10) 0%, rgba(6,182,212,0.05) 100%)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(109,40,217,0.22)",
-          borderRadius: "1.5rem",
-          padding: "1.25rem",
-          boxShadow:
-            "0 0 32px rgba(109,40,217,0.08), 0 4px 24px rgba(0,0,0,0.4)",
           alignSelf: "start",
         }}
       >

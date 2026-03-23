@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" style={{ scrollBehavior: "smooth" }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased bg-gray-50 dark:bg-[#020005] text-gray-900 dark:text-[#e8ecf5]`}
       >
         <ThemeProvider>
           <ProgressProvider>

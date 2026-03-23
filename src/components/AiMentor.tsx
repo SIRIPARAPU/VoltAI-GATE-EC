@@ -110,6 +110,7 @@ export function AiMentor() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="bg-white/90 dark:bg-[#0a0a0a]/85 border border-gray-200 dark:border-white/10"
             style={{
               position: "fixed",
               bottom: "5.5rem",
@@ -120,11 +121,9 @@ export function AiMentor() {
               maxHeight: "75vh",
               zIndex: 9999,
               borderRadius: "1.25rem",
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(10,10,10,0.85)",
               backdropFilter: "blur(24px)",
               WebkitBackdropFilter: "blur(24px)",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(109,40,217,0.15)",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.2), 0 0 20px rgba(109,40,217,0.1)",
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
@@ -132,10 +131,9 @@ export function AiMentor() {
           >
             {/* Header */}
             <div
+              className="bg-gray-50 dark:bg-transparent border-b border-gray-200 dark:border-white/5"
               style={{
                 padding: "1rem",
-                borderBottom: "1px solid rgba(255,255,255,0.06)",
-                background: "linear-gradient(90deg, rgba(109,40,217,0.15), rgba(6,182,212,0.05))",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -154,27 +152,33 @@ export function AiMentor() {
                     boxShadow: "0 0 10px rgba(124,58,237,0.5)",
                   }}
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 12 2.1 7.1"/><path d="M12 12l9.9 4.9"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+                    <path d="M12 12 2.1 7.1"/>
+                    <path d="M12 12l9.9 4.9"/>
+                  </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f1f5f9", letterSpacing: "-0.01em" }}>GATE AI Mentor</div>
-                  <div style={{ fontSize: "0.7rem", color: "rgba(148,163,184,0.8)" }}>
+                  <div className="text-gray-900 dark:text-[#f1f5f9]" style={{ fontSize: "0.95rem", fontWeight: 700, letterSpacing: "-0.01em" }}>GATE AI Mentor</div>
+                  <div className="text-gray-500 dark:text-slate-400/80" style={{ fontSize: "0.7rem" }}>
                     {context.topicTitle !== "General" ? `Context: ${context.topicTitle}` : context.subjectName !== "General" ? `Context: ${context.subjectName}` : "Global Context"}
                   </div>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="active-compress"
+                className="active-compress text-gray-500 hover:text-gray-800 dark:text-white/50 dark:hover:text-white"
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: "rgba(255,255,255,0.5)",
                   cursor: "pointer",
                   padding: "0.25rem",
                 }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
               </button>
             </div>
 
@@ -190,8 +194,10 @@ export function AiMentor() {
               }}
             >
               {messages.length === 0 && (
-                <div style={{ textAlign: "center", color: "rgba(148,163,184,0.6)", fontSize: "0.85rem", marginTop: "2rem" }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto 1rem", opacity: 0.5 }}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <div className="text-gray-500 dark:text-slate-400/60" style={{ textAlign: "center", fontSize: "0.85rem", marginTop: "2rem" }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto 1rem", opacity: 0.5 }}>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
                   <p>I am your GATE EC Mentor.</p>
                   <p style={{ marginTop: "0.25rem" }}>Ask me any concept or doubt!</p>
                 </div>
@@ -199,16 +205,14 @@ export function AiMentor() {
               {messages.map((msg, i) => (
                 <div
                   key={i}
+                  className={msg.role === "user" ? "bg-gradient-to-br from-violet-600 to-purple-700 text-white" : "bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-[#f1f5f9]"}
                   style={{
                     alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
                     maxWidth: "85%",
-                    background: msg.role === "user" ? "linear-gradient(135deg, #7C3AED, #6D28D9)" : "rgba(255,255,255,0.06)",
-                    border: msg.role === "user" ? "none" : "1px solid rgba(255,255,255,0.05)",
                     padding: "0.75rem 1rem",
                     borderRadius: "1rem",
                     borderBottomRightRadius: msg.role === "user" ? "0.25rem" : "1rem",
                     borderBottomLeftRadius: msg.role === "assistant" ? "0.25rem" : "1rem",
-                    color: "#f1f5f9",
                     fontSize: "0.85rem",
                     lineHeight: 1.5,
                   }}
@@ -217,7 +221,7 @@ export function AiMentor() {
                 </div>
               ))}
               {loading && (
-                <div style={{ alignSelf: "flex-start", padding: "0.75rem 1rem", background: "rgba(255,255,255,0.06)", borderRadius: "1rem", borderBottomLeftRadius: "0.25rem" }}>
+                <div className="bg-gray-100 dark:bg-white/5" style={{ alignSelf: "flex-start", padding: "0.75rem 1rem", borderRadius: "1rem", borderBottomLeftRadius: "0.25rem" }}>
                   <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#22d3ee", animation: "neonPulse 1s ease-in-out infinite" }} />
                 </div>
               )}
@@ -225,14 +229,14 @@ export function AiMentor() {
             </div>
 
             {/* Input Area */}
-            <div style={{ padding: "0.75rem", borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(0,0,0,0.3)" }}>
+            <div className="bg-white dark:bg-black/30 border-t border-gray-200 dark:border-white/5" style={{ padding: "0.75rem" }}>
               <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem" }}>
                 <input
                   type="text"
                   value={inputObj}
                   onChange={(e) => setInputObj(e.target.value)}
                   placeholder="Ask a question..."
-                  className="input-neon"
+                  className="input-neon bg-gray-50 text-gray-900 border border-gray-200 dark:bg-[#050505] dark:text-white dark:border-white/10"
                   style={{ flex: 1, padding: "0.6rem 1rem", fontSize: "0.85rem", borderRadius: "99px" }}
                   disabled={loading}
                 />
@@ -251,7 +255,10 @@ export function AiMentor() {
                     opacity: inputObj.trim() && !loading ? 1 : 0.5,
                   }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
                 </button>
               </form>
             </div>

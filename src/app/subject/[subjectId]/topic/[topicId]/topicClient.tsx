@@ -29,17 +29,7 @@ const notesKey = (subjectId: string, topicId: string) =>
   `gate_ai_v2_notes_${subjectId}__${topicId}`;
 
 // ── Glassmorphism style constants ──────────────────────────
-const glassPanel: React.CSSProperties = {
-  background:
-    "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
-  backdropFilter: "blur(24px)",
-  WebkitBackdropFilter: "blur(24px)",
-  border: "1px solid rgba(255,255,255,0.09)",
-  borderTopColor: "rgba(255,255,255,0.16)",
-  borderRadius: "1.25rem",
-  padding: "1.5rem",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset",
-};
+const getGlassPanelClasses = () => "bg-white/80 dark:bg-white/5 backdrop-blur-2xl border border-gray-200 dark:border-white/10 rounded-[1.25rem] p-6 shadow-xl";
 
 export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Props) {
   // ── LOCKED: all state ────────────────────────────────────
@@ -158,13 +148,13 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
     >
       {/* ── REVISION NOTES PANEL (full width) ────────── */}
       <motion.section
+        className={getGlassPanelClasses()}
         whileHover={{
           boxShadow:
             "0 0 0 1px rgba(109,40,217,0.35), 0 0 48px rgba(109,40,217,0.18), 0 8px 60px rgba(0,0,0,0.5)",
           y: -3,
         }}
         transition={{ duration: 0.2 }}
-        style={glassPanel}
       >
         <div
           style={{
@@ -177,10 +167,10 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
         >
           <div>
             <h2
+              className="text-gray-900 dark:text-[#f1f5f9]"
               style={{
                 fontSize: "1.05rem",
                 fontWeight: 700,
-                color: "#f1f5f9",
                 letterSpacing: "-0.01em",
               }}
             >
@@ -245,11 +235,11 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
 
         {/* Notes content area */}
         <div
+          className="bg-gray-50 dark:bg-black/20 border-gray-200 dark:border-white/5 text-gray-900 dark:text-gray-100"
           style={{
             marginTop: "1rem",
             borderRadius: "0.75rem",
-            border: "1px solid rgba(255,255,255,0.06)",
-            background: "rgba(0,0,0,0.2)",
+            borderWidth: "1px",
             padding: "1.25rem",
             minHeight: "12rem",
           }}
@@ -258,9 +248,9 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
             <MathText text={notes.text} />
           ) : (
             <div
+              className="text-gray-500 dark:text-slate-400/60"
               style={{
                 fontSize: "0.83rem",
-                color: "rgba(148,163,184,0.6)",
                 lineHeight: 1.6,
               }}
             >
@@ -282,6 +272,7 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
             {/* Chat messages area */}
             {chatMessages.length > 0 && (
               <div
+                className="bg-gray-100 dark:bg-black/15 border-gray-200 dark:border-white/5"
                 style={{
                   maxHeight: "24rem",
                   overflowY: "auto",
@@ -291,8 +282,7 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
                   marginBottom: "0.75rem",
                   padding: "0.75rem",
                   borderRadius: "0.75rem",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  background: "rgba(0,0,0,0.15)",
+                  borderWidth: "1px",
                 }}
               >
                 {chatMessages.map((msg, i) => {
@@ -309,19 +299,14 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
                       }}
                     >
                       <div
+                        className={isUser ? "bg-gradient-to-br from-violet-600 to-purple-700 text-white border-violet-500/30" : "bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-slate-200"}
                         style={{
                           padding: "0.65rem 0.9rem",
                           borderRadius: isUser
                             ? "0.75rem 0.75rem 0.2rem 0.75rem"
                             : "0.75rem 0.75rem 0.75rem 0.2rem",
-                          background: isUser
-                            ? "linear-gradient(135deg, rgba(139,92,246,0.35), rgba(109,40,217,0.25))"
-                            : "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
-                          border: isUser
-                            ? "1px solid rgba(139,92,246,0.3)"
-                            : "1px solid rgba(255,255,255,0.08)",
+                          borderWidth: "1px",
                           fontSize: "0.83rem",
-                          color: isUser ? "#e0d4fc" : "#cbd5e1",
                           lineHeight: 1.6,
                         }}
                       >
@@ -374,14 +359,13 @@ export function TopicClient({ subjectName, topicTitle, subjectId, topicId }: Pro
                 }}
                 placeholder="Ask a follow-up question..."
                 disabled={chatLoading}
+                className="bg-white text-gray-900 border-gray-300 dark:bg-[#050505] dark:text-[#e2e8f0] dark:border-white/10"
                 style={{
                   flex: 1,
                   padding: "0.7rem 1rem",
                   fontSize: "0.85rem",
                   borderRadius: "0.75rem",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  background: "rgba(0,0,0,0.25)",
-                  color: "#e2e8f0",
+                  borderWidth: "1px",
                   outline: "none",
                   transition: "border-color 0.2s",
                 }}
