@@ -246,7 +246,7 @@ export function PracticeClient({
           MAIN PRACTICE PANEL
       ══════════════════════════════════════════════════════ */}
       <section
-        className="bg-white/80 dark:bg-white/5 backdrop-blur-2xl border border-gray-200 dark:border-white/10 rounded-[1.5rem] p-5 shadow-xl lg:col-span-2"
+        className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[1.5rem] p-5 shadow-xl lg:col-span-2"
       >
         {/* Header row */}
         <div
@@ -395,7 +395,7 @@ export function PracticeClient({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.22 }}
-                className="bg-gray-50 dark:bg-black/20 border-gray-200 dark:border-white/5 text-gray-900 dark:text-gray-100"
+                className="bg-black/20 border-white/5 text-gray-100"
                 style={{
                   borderRadius: "0.85rem",
                   borderWidth: "1px",
@@ -603,7 +603,7 @@ export function PracticeClient({
                   style={{ overflow: "hidden" }}
                 >
                   <div
-                    className="bg-gray-100 dark:bg-black/30 border-gray-200 dark:border-white/10"
+                    className="bg-black/30 border-white/10"
                     style={{
                       borderRadius: "1rem",
                       borderWidth: "1px",
@@ -641,7 +641,7 @@ export function PracticeClient({
           RULES SIDEBAR
       ══════════════════════════════════════════════════════ */}
       <aside
-        className="bg-purple-50/50 dark:bg-white/5 backdrop-blur-xl border border-purple-200 dark:border-white/10 rounded-[1.5rem] p-5 shadow-lg max-lg:-order-1"
+        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-5 shadow-lg max-lg:-order-1"
         style={{
           alignSelf: "start",
         }}

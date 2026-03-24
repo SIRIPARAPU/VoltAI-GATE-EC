@@ -28,7 +28,7 @@ export function Header() {
             className="text-gradient-neon text-sm font-bold tracking-tight"
             style={{ fontSize: "0.95rem" }}
           >
-            VoltAI
+            VoltAi
           </span>
         </Link>
 

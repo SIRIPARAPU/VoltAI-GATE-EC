@@ -198,28 +198,27 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className="bg-black/40 backdrop-blur-md p-8 rounded-3xl" style={{ position: "relative", zIndex: 10, textAlign: "center", maxWidth: "600px", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)" }}>
+        <div style={{ position: "relative", zIndex: 10, textAlign: "center", maxWidth: "600px" }}>
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             className="text-violet-300 border-violet-500/30"
             style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.75rem", padding: "0.4rem 1rem", borderRadius: "99px", background: "rgba(124,58,237,0.1)", border: "1px solid", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}
           >
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#7c3aed", boxShadow: "0 0 8px #7c3aed", animation: "neonPulse 2s infinite" }} />
-            GATE EC 2027 · AI Command Center
+            GATE EC 2027 · VoltAi
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             style={{ fontSize: "clamp(3.5rem, 12vw, 7.5rem)", fontWeight: 900, letterSpacing: "-0.05em", lineHeight: 0.95, background: "linear-gradient(135deg, #7c3aed 0%, #818cf8 35%, #22d3ee 70%, #06b6d4 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0 0 50px rgba(124,58,237,0.35))" }}
           >
-            VoltAI
+            VoltAi
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-gray-600 dark:text-gray-300"
-            style={{ marginTop: "1.5rem", fontSize: "1.1rem", fontWeight: 400, lineHeight: 1.6 }}
+            style={{ marginTop: "1.5rem", fontSize: "1.1rem", fontWeight: 400, lineHeight: 1.6, color: "#cbd5e1", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}
           >
             Your AI-powered GATE EC companion.<br />
-            <span className="text-gray-500 dark:text-gray-400" style={{ fontSize: "0.9rem" }}>Master GATE EC with AI-powered notes, practice & mentoring.</span>
+            <span style={{ fontSize: "0.9rem", color: "#94a3b8" }}>Master GATE EC with AI-powered notes, practice & mentoring.</span>
           </motion.p>
 
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -233,7 +232,7 @@ export default function Home() {
             </Link>
             <Link href="/settings"
               style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.9rem 1.5rem", fontSize: "0.85rem", fontWeight: 600, textDecoration: "none", background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.22)", borderRadius: "99px", transition: "all 0.2s ease" }}
-              className="text-violet-900 dark:text-violet-300 hover:bg-violet-900/20 hover:border-violet-500/40"
+              className="text-violet-300 hover:bg-violet-900/20 hover:border-violet-500/40"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
               AI Settings
@@ -264,10 +263,10 @@ export default function Home() {
           <div style={{ fontSize: "0.8rem", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(124,58,237,0.8)", marginBottom: "0.75rem" }}>
             The Arsenal
           </div>
-          <div className="text-gray-900 dark:text-white" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.15 }}>
+          <div className="text-white" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.15 }}>
             Platform Features
           </div>
-          <div className="text-gray-600 dark:text-gray-400" style={{ marginTop: "1rem", fontSize: "1rem", lineHeight: 1.6, maxWidth: "600px", marginInline: "auto" }}>
+          <div className="text-gray-400" style={{ marginTop: "1rem", fontSize: "1rem", lineHeight: 1.6, maxWidth: "600px", marginInline: "auto" }}>
             Built for serious GATE EC aspirants — AI-first, locally-private, exam-focused.
           </div>
         </motion.div>
@@ -282,7 +281,7 @@ export default function Home() {
               whileHover={{ y: -6, boxShadow: `0 20px 60px rgba(0,0,0,0.1), 0 0 40px ${card.glow}` }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-white/50 dark:bg-white/5 backdrop-blur-md"
+              className="bg-white/5 backdrop-blur-md"
               style={{
                 position: "relative", overflow: "hidden",
                 border: `1px solid ${card.border}`,
@@ -306,8 +305,8 @@ export default function Home() {
 
               {/* Content */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                <div className="text-gray-900 dark:text-white" style={{ fontSize: "0.975rem", fontWeight: 700, letterSpacing: "-0.02em" }}>{card.title}</div>
-                <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: "0.8rem", lineHeight: 1.65 }}>{card.desc}</div>
+                <div className="text-white" style={{ fontSize: "0.975rem", fontWeight: 700, letterSpacing: "-0.02em" }}>{card.title}</div>
+                <div className="text-gray-400" style={{ fontSize: "0.8rem", lineHeight: 1.65 }}>{card.desc}</div>
               </div>
 
               {/* Tag */}
@@ -324,16 +323,16 @@ export default function Home() {
       ═══════════════════════════════════════════════════ */}
       <section style={{ maxWidth: "1040px", margin: "5rem auto 0", padding: "0 1.5rem" }}>
         <motion.div
-          className="bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10"
+          className="bg-white/5 border border-white/10"
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           style={{ backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderRadius: "1.5rem", padding: "2.5rem", transform: "translateZ(0)" }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gray-500 dark:text-gray-400" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-              <span className="text-gray-500 dark:text-gray-400" style={{ fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase" }}>Intelligence Report</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gray-400" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              <span className="text-gray-400" style={{ fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase" }}>Intelligence Report</span>
             </div>
-            <Link href="/dashboard" className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300" style={{ fontSize: "0.75rem", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.3rem", transition: "color 0.2s" }}>
+            <Link href="/dashboard" className="text-violet-400 hover:text-violet-300" style={{ fontSize: "0.75rem", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.3rem", transition: "color 0.2s" }}>
               View Dashboard →
             </Link>
           </div>
@@ -341,15 +340,15 @@ export default function Home() {
           {/* Metrics row */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
             {[
-              { value: totalLecturesAcrossAll, label: "Lectures Finished", colorClass: "text-gray-900 dark:text-white" },
-              { value: questionsToday, label: "Questions Today", colorClass: "text-cyan-600 dark:text-cyan-400" },
-              { value: topicsPracticed, label: "Topics Practiced", colorClass: "text-violet-600 dark:text-violet-400" },
+              { value: totalLecturesAcrossAll, label: "Lectures Finished", colorClass: "text-white" },
+              { value: questionsToday, label: "Questions Today", colorClass: "text-cyan-400" },
+              { value: topicsPracticed, label: "Topics Practiced", colorClass: "text-violet-400" },
             ].map((m) => (
               <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                 <div className={m.colorClass} style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 900, lineHeight: 1, letterSpacing: "-0.04em", fontFamily: "var(--font-space-grotesk), sans-serif" }}>
                   {m.value}
                 </div>
-                <div className="text-gray-500 dark:text-gray-500" style={{ fontSize: "0.72rem", fontWeight: 500, letterSpacing: "0.02em" }}>{m.label}</div>
+                <div className="text-gray-500" style={{ fontSize: "0.72rem", fontWeight: 500, letterSpacing: "0.02em" }}>{m.label}</div>
               </div>
             ))}
           </div>
@@ -370,7 +369,7 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <div className="text-emerald-700 dark:text-emerald-400" style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "0.625rem", fontSize: "0.78rem" }}>
+            <div className="text-emerald-400" style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "0.625rem", fontSize: "0.78rem" }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               No weak zones detected — keep practicing!
             </div>
@@ -386,10 +385,10 @@ export default function Home() {
           <div style={{ fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(34,211,238,0.65)", marginBottom: "0.75rem" }}>
             Strategy Guide
           </div>
-          <div className="text-gray-900 dark:text-white" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
+          <div className="text-white" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
             GATE EC Battle Plan
           </div>
-          <div className="text-gray-500 dark:text-gray-400" style={{ marginTop: "0.5rem", fontSize: "0.875rem", lineHeight: 1.6 }}>
+          <div className="text-gray-400" style={{ marginTop: "0.5rem", fontSize: "0.875rem", lineHeight: 1.6 }}>
             Subject priority ordered by marks weightage — attack in this sequence.
           </div>
         </motion.div>
@@ -402,7 +401,7 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="strategy-card bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10"
+              className="strategy-card bg-white/5 border border-white/10"
               style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start", borderRadius: "1rem", padding: "1.375rem 1.5rem", transition: "background 0.2s ease, border-color 0.2s ease" }}
             >
               <div style={{ fontSize: "1.75rem", fontWeight: 900, fontFamily: "var(--font-geist-mono)", color: item.color, opacity: 0.6, minWidth: "2.75rem", lineHeight: 1, textShadow: `0 0 24px ${item.color}40`, flexShrink: 0 }}>
@@ -410,12 +409,12 @@ export default function Home() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-                  <span className="text-gray-900 dark:text-white" style={{ fontSize: "0.925rem", fontWeight: 700, letterSpacing: "-0.01em" }}>{item.subject}</span>
+                  <span className="text-white" style={{ fontSize: "0.925rem", fontWeight: 700, letterSpacing: "-0.01em" }}>{item.subject}</span>
                   <span style={{ padding: "0.22rem 0.65rem", borderRadius: "99px", background: `${item.color}16`, border: `1px solid ${item.color}28`, fontSize: "0.62rem", fontWeight: 700, color: item.color }}>
                     {item.weight}
                   </span>
                 </div>
-                <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: "0.8rem", lineHeight: 1.6 }}>
+                <div className="text-gray-400" style={{ fontSize: "0.8rem", lineHeight: 1.6 }}>
                   {item.tip}
                 </div>
               </div>
@@ -426,13 +425,13 @@ export default function Home() {
         {/* Pro tip */}
         <motion.div
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.5 }}
-          className="bg-violet-50/50 dark:bg-transparent border border-violet-200 dark:border-violet-500/20"
+          className="bg-transparent border border-violet-500/20"
           style={{ marginTop: "2rem", padding: "1.5rem 1.75rem", borderRadius: "1rem", background: "linear-gradient(135deg, rgba(124,58,237,0.07), rgba(34,211,238,0.04))", display: "flex", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}
         >
           <div style={{ fontSize: "1.5rem", lineHeight: 1, flexShrink: 0 }}>⚡</div>
           <div>
-            <div className="text-violet-700 dark:text-violet-300" style={{ fontSize: "0.85rem", fontWeight: 700, marginBottom: "0.3rem" }}>Pro tip</div>
-            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: "0.8rem", lineHeight: 1.65 }}>
+            <div className="text-violet-300" style={{ fontSize: "0.85rem", fontWeight: 700, marginBottom: "0.3rem" }}>Pro tip</div>
+            <div className="text-gray-400" style={{ fontSize: "0.8rem", lineHeight: 1.65 }}>
               Spend the first 4 months on the top 3 subjects. Use the Practice Engine daily — even 10 questions/day compounds into 3,650 questions by exam day.
             </div>
           </div>

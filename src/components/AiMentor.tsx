@@ -110,7 +110,7 @@ export function AiMentor() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="bg-white/90 dark:bg-[#0a0a0a]/85 border border-gray-200 dark:border-white/10"
+            className="bg-[#0a0a0a]/85 border border-white/10"
             style={{
               position: "fixed",
               bottom: "5.5rem",
@@ -131,7 +131,7 @@ export function AiMentor() {
           >
             {/* Header */}
             <div
-              className="bg-gray-50 dark:bg-transparent border-b border-gray-200 dark:border-white/5"
+              className="bg-transparent border-b border-white/5"
               style={{
                 padding: "1rem",
                 display: "flex",
@@ -159,15 +159,15 @@ export function AiMentor() {
                   </svg>
                 </div>
                 <div>
-                  <div className="text-gray-900 dark:text-[#f1f5f9]" style={{ fontSize: "0.95rem", fontWeight: 700, letterSpacing: "-0.01em" }}>GATE AI Mentor</div>
-                  <div className="text-gray-500 dark:text-slate-400/80" style={{ fontSize: "0.7rem" }}>
+                  <div className="text-[#f1f5f9]" style={{ fontSize: "0.95rem", fontWeight: 700, letterSpacing: "-0.01em" }}>GATE AI Mentor</div>
+                  <div className="text-slate-400/80" style={{ fontSize: "0.7rem" }}>
                     {context.topicTitle !== "General" ? `Context: ${context.topicTitle}` : context.subjectName !== "General" ? `Context: ${context.subjectName}` : "Global Context"}
                   </div>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="active-compress text-gray-500 hover:text-gray-800 dark:text-white/50 dark:hover:text-white"
+                className="active-compress text-white/50 hover:text-white"
                 style={{
                   background: "transparent",
                   border: "none",
@@ -194,7 +194,7 @@ export function AiMentor() {
               }}
             >
               {messages.length === 0 && (
-                <div className="text-gray-500 dark:text-slate-400/60" style={{ textAlign: "center", fontSize: "0.85rem", marginTop: "2rem" }}>
+                <div className="text-slate-400/60" style={{ textAlign: "center", fontSize: "0.85rem", marginTop: "2rem" }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto 1rem", opacity: 0.5 }}>
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   </svg>
@@ -205,7 +205,7 @@ export function AiMentor() {
               {messages.map((msg, i) => (
                 <div
                   key={i}
-                  className={msg.role === "user" ? "bg-gradient-to-br from-violet-600 to-purple-700 text-white" : "bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-[#f1f5f9]"}
+                  className={msg.role === "user" ? "bg-gradient-to-br from-violet-600 to-purple-700 text-white" : "bg-white/5 border border-white/5 text-[#f1f5f9]"}
                   style={{
                     alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
                     maxWidth: "85%",
@@ -221,7 +221,7 @@ export function AiMentor() {
                 </div>
               ))}
               {loading && (
-                <div className="bg-gray-100 dark:bg-white/5" style={{ alignSelf: "flex-start", padding: "0.75rem 1rem", borderRadius: "1rem", borderBottomLeftRadius: "0.25rem" }}>
+                <div className="bg-white/5" style={{ alignSelf: "flex-start", padding: "0.75rem 1rem", borderRadius: "1rem", borderBottomLeftRadius: "0.25rem" }}>
                   <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#22d3ee", animation: "neonPulse 1s ease-in-out infinite" }} />
                 </div>
               )}
@@ -229,14 +229,14 @@ export function AiMentor() {
             </div>
 
             {/* Input Area */}
-            <div className="bg-white dark:bg-black/30 border-t border-gray-200 dark:border-white/5" style={{ padding: "0.75rem" }}>
+            <div className="bg-black/30 border-t border-white/5" style={{ padding: "0.75rem" }}>
               <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem" }}>
                 <input
                   type="text"
                   value={inputObj}
                   onChange={(e) => setInputObj(e.target.value)}
                   placeholder="Ask a question..."
-                  className="input-neon bg-gray-50 text-gray-900 border border-gray-200 dark:bg-[#050505] dark:text-white dark:border-white/10"
+                  className="input-neon bg-[#050505] text-white border border-white/10"
                   style={{ flex: 1, padding: "0.6rem 1rem", fontSize: "0.85rem", borderRadius: "99px" }}
                   disabled={loading}
                 />

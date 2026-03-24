@@ -141,7 +141,7 @@ function DashboardHub() {
           </div>
 
           <div style={{ fontSize: "0.65rem", fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(124,58,237,0.8)", marginBottom: "0.25rem" }}>
-            Command Center
+            VoltAi
           </div>
           <div style={{ fontSize: "1rem", fontWeight: 700, color: "#f1f5f9", letterSpacing: "-0.02em" }}>
             Dashboard

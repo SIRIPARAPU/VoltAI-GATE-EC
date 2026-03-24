@@ -25,7 +25,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "VoltAI — GATE EC Command Center",
+  title: "VoltAi — GATE EC 2027",
   description: "Your AI-powered gateway to mastering GATE EC 2027.",
 };
 

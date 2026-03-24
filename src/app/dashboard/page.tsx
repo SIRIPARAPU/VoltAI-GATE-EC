@@ -172,7 +172,7 @@ export default function DashboardPage() {
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
             <div>
               <div style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(124,58,237,0.8)", marginBottom: "0.4rem" }}>
-                Study Command Center
+                VoltAi
               </div>
               <h1 style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 900, letterSpacing: "-0.04em", color: "#f1f5f9", margin: 0, lineHeight: 1.1 }}>
                 Dashboard
